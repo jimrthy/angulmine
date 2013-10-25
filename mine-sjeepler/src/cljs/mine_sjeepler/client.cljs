@@ -1,7 +1,4 @@
 (ns mine-sjeepler.client
-  ;; Actually, this probably doesn't make a whole lot of sense in
-  ;; a cljs file.
-  ;;(:require [spyscope.core])
   (:require [clojure.browser.repl]
             [goog.events :as events]
             [goog.events.EventType :as event-type]))
@@ -29,28 +26,38 @@
       (.requestAnimationFrame js/window recurse))))
 
 (defn hello
+  "Really just to verify that the REPL connection is working"
   []
   (js/alert "salut"))
 
 (defn whoami
+  "More REPL verification, but this might be vaguely useful"
   []
   (.-userAgent js/navigator))
 
-(defn on-click [event]
+(defn on-click
+  "Mouse Click handler
+Odds are, you probably want to replace this with something useful."
+  [event]
   (js/alert (str event)))
 
+(defn key-down
+  "If you're interested in keyboard input, you probably want to do something more interesting than this."
+  [e]
+  (let [code (or (.-which e)
+                 (.-keyCode e)
+                 (.-key e))]
+    (js/alert (str "You pressed: " code))
+    ;; FIXME: Save that value somewhere...if I care
+                                               ))
+
 (defn add-input-event-listeners []
-  (events/listen js/window event-type/CLICK on-click)
-  ;; TODO: Failing here
   ;; Q: Do I want to handle these via core.async?
   ;; A: Pretty definitely not. I don't think.
-  (comment) (.addEventListener js/document "keydown" (fn [e]
-                                                       (let [code (or (.-which e)
-                                                                      (.-keyCode e)
-                                                                      (.-key e))]
-                                                         (js/alert (str "You pressed: " code))
-                                                         ;; FIXME: Save that value somewhere...if I care
-                                                         ))))
+
+  ;; Q: Do I really want to set this up this way?
+  (events/listen js/window event-type/CLICK on-click)
+  (.addEventListener js/document "keydown" key-down))
 
 (defn initialize []
   (let [canvas (.createElement js/document "canvas")]
@@ -61,8 +68,6 @@
     (set! (.-backgroundColor (.-style canvas)) "black")
     (.appendChild (.-body js/document) canvas)
 
-    (comment (events/listen! canvas
-                             :click on-click))
     (add-input-event-listeners)
     
     ;; Build Initial State
@@ -112,14 +117,5 @@
 
       ;; Start game
       (next-frame initial-state))))
-
-
-;;; Initial pieces that were auto-genned
-
-(comment (defn handle-click []
-           (js/alert "Hello!")))
-
-(comment (def clickable (.getElementById js/document "clickable")))
-(comment (.addEventListener clickable "click" handle-click))
 
 (initialize)
