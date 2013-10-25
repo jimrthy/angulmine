@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>scrabbletris</title>
+      <style>
+	canvas {
+	margin: 0 auto;
+	display block;
+	}
+      </style>
+  </head>
+  <body>
+    <script src="js/game.js"></script>
+    <script type="script/javascript">
+      /* Copied from https://github.com/cemerick/austin/blob/master/src/clj/cemerick/austin/repls.clj 
+      Doing it this way is horribly cheesy and non-portable, but I just want baby-steps at the
+      moment. */
+      goog.require('clojure.browsel.repl');
+      /* Second parameter string should be whatever's returned by
+      getting the :repl-url entry out of the map created by
+      calling (cemerick.austin/repl-env) */
+      clojure.browser.repl.connect.call(null,
+      'http://localhost:57991/2579/repl/start');
+    </script>
+  </body>
+</html>
