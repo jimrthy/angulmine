@@ -30,8 +30,9 @@ describe('Minesweeper controllers', function(){
 	      }
 	      catch(e) {
 		  var msg = "Setting up a New Game failed: " + e.message;
-		  msg += e;
-		  console.log(e);
+		  //msg += e;
+		  //console.log(e);
+		  console.log(msg);
 
 		  // It's almost a shame that there's no way to mark this entire piece of the
 		  // test as a failure.
@@ -73,6 +74,8 @@ describe('Minesweeper controllers', function(){
 
 		  var leftMostColumn = x==0;
 		  var rightMostColumn = x+1 == board.length;
+		  // Note that these assume a square grid. Which fits into pretty much
+		  // everyone's expectations, but makes the actual problem a little less interesting.
 		  var topRow = y==0;
 		  var bottomRow = y+1 == board[x].length;
 

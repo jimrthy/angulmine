@@ -16,21 +16,6 @@ mineControllers.controller('Game', ['$scope',
 	  return Math.floor(seed * top);
       }
 
-      var buildBlankBoard = function(width, height) {
-	  // Initialize an empty playing field
-	  // TODO: This is, realistically, worth turning into its own object.
-	  // If nothing else, this is where the bombAt function really should live.
-	  var board = [];
-	  for(var i=0; i<width; i++) {
-	      var row = [];
-	      for(var j=0; j<height; j++) {
-		  row.push(0);
-	      }
-	      board.push(row);
-	  }
-	  return board;
-      }
-
       var shuffle = function(vals)
       {
 	  // Shamelessly stolen from http://www.merlyn.demon.co.uk/js-shufl.htm#FnB
@@ -47,6 +32,22 @@ mineControllers.controller('Game', ['$scope',
 	  }
       }
 
+      var buildBlankBoard = function(width, height) {
+	  // Initialize an empty playing field
+	  // TODO: This is, realistically, worth turning into its own object.
+	  // If nothing else, this is where the bombAt function really should live.
+	  var board = [];
+	  for(var i=0; i<width; i++) {
+	      var row = [];
+	      for(var j=0; j<height; j++) {
+		  row.push(0);
+	      }
+	      board.push(row);
+	  }
+	  return board;
+      }
+
+      // Much more useful than something so short and simple looks.
       $scope.bombAt = function(board, x, y) {
 	  return board[x, y] == 'bomb!';
       }
@@ -74,7 +75,10 @@ mineControllers.controller('Game', ['$scope',
 	  // If board doesn't have a bomb at (x,y), increment the count
 	  if(! $scope.bombAt(board, x, y)) {
 	      //console.log("Incrementing a neighbor at (", x, ", ", y, ")");
-	      board[x, y]++;
+	      // This next line seems to be failing miserably:
+	      //board[x, y] += 1;
+	      currentCount = parseInt(board[x, y]);
+	      board[x, y] = currentCount+1;
 	  }
       }
 
@@ -92,7 +96,7 @@ mineControllers.controller('Game', ['$scope',
 		  possiblyIncrement(board, x-1, y-1);
 	      }
 	      possiblyIncrement(board, x-1, y);
-	      if(y < board[x].length-1) {
+	      if(y < board[x-1].length-1) {
 		  possiblyIncrement(board, x-1, y+1)
 	      };		  
 	  }
@@ -111,10 +115,44 @@ mineControllers.controller('Game', ['$scope',
 		  possiblyIncrement(board, x+1, y-1);
 	      }
 	      possiblyIncrement(board, x+1, y);
-	      if(y+1 < board[x].length) {
+	      if(y+1 < board[x+1].length) {
 		  possiblyIncrement(board, x+1, y+1);
 	      }
 	  }
+      }
+
+      $scope.prettyPrint = function(board) {
+	  console.log("Pretty printing");
+
+	  var delimeter = "*****************************************************\n";
+	  var result = delimeter;
+	  board.forEach(function(row) {
+	      console.log (".");
+	      result += "[";
+	      try {
+		  row.forEach(function(column) {
+		      //console.log("Appending: " + JSON.stringify(column));
+		      try {
+			  result += " " + column;
+		      }
+		      catch (e) {
+			  console.log("Have something illegal...well, somewhere");
+			  // Try this for grins:
+			  console.log(column);
+		      }
+		  });
+	      }
+	      catch(e) {
+		  console.log("Failed to iterate over a row in the board. Problem data:");
+		  console.log(row);
+	      }
+	      result += "]\n";
+	  });
+	  result += delimeter;
+	  
+	  console.log("Getting ready to print the board:");
+	  console.log(result);
+	  return result;
       }
 
       $scope.populateBoard = function(blankBoard, bombLocations) {
@@ -129,6 +167,7 @@ mineControllers.controller('Game', ['$scope',
 
 	      if($scope.bombAt(blankBoard, x, y)) {
 		  console.log("Oops");
+		  console.log($scope.prettyPrint(blankBoard));
 		  throw { message: "Shuffle failed",
 			  board: blankBoard,
 			  location: loc,
@@ -140,7 +179,6 @@ mineControllers.controller('Game', ['$scope',
 	      blankBoard[x, y] = 'bomb!';
 
 	      incrementNeighborCounts(blankBoard, x, y);
-
 	  });
       }
 
