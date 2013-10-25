@@ -1,4 +1,4 @@
-(ns scrabbletris.core
+(ns mine-sjeepler.core
   (:require [scrabbletris.system :as sys]))
 
 (defn -main []

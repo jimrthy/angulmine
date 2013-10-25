@@ -1,5 +1,5 @@
-(defproject scrabbletris "0.1.0-SNAPSHOT"
-  :description "FIXME: write this!"
+(defproject mine-sjeepler "0.1.0-SNAPSHOT"
+  :description "Minesweeper clone, to show off my mad javascript skillz"
   :url "http://example.com/FIXME"
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [org.clojure/clojurescript "0.0-1934"]
@@ -28,7 +28,7 @@
                    :optimizations :advanced
                    :pretty-print true}
         :jar true}}}
-  :main scrabbletris.core
+  :main mine-sjeepler.core
   :profiles {:dev {:plugins [[com.cemerick/austin "0.1.1"]
                              [lein-cljsbuild "0.3.2"]
                              [lein-ring "0.8.3"]]

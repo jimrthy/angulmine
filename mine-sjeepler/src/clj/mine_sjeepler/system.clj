@@ -1,4 +1,4 @@
-(ns scrabbletris.system
+(ns mine-sjeepler.system
   (:require [ring.adapter.jetty :as jetty]
             [scrabbletris.server :as srvr]))
 

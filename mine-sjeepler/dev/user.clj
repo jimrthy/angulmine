@@ -5,7 +5,7 @@
             [clojure.repl :refer :all]
             [clojure.test :as test]
             [clojure.tools.namespace.repl :refer (refresh refresh-all)]
-            [scrabbletris.system :as sys]
+            [mine-sjeepler.system :as sys]
             [spyscope.core]))
 
 (def system nil)

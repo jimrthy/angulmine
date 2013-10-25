@@ -1,4 +1,4 @@
-(ns scrabbletris.server
+(ns mine-sjeepler.server
   (:require [cemerick.austin.repls :refer (browser-connected-repl-js)]
             [ring.middleware.resource :as resources]
             [ring.util.response :as response])

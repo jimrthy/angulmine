@@ -1,4 +1,4 @@
-(ns hello-clojurescript
+(ns mine-sjeepler.client
   ;; Actually, this probably doesn't make a whole lot of sense in
   ;; a cljs file.
   ;;(:require [spyscope.core])
