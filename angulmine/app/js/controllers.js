@@ -40,7 +40,10 @@ mineControllers.controller('Game', ['$scope',
 	  for(var i=0; i<width; i++) {
 	      var row = [];
 	      for(var j=0; j<height; j++) {
-		  row.push(0);
+		  cell = {bomb: false,
+			  hidden: true,
+			  neighboring_bombs: 0};
+		  row.push(cell);
 	      }
 	      board.push(row);
 	  }
@@ -49,10 +52,10 @@ mineControllers.controller('Game', ['$scope',
 
       // Much more useful than something so short and simple looks.
       $scope.bombAt = function(board, x, y) {
-	  return board[x, y] == 'bomb!';
+	  return board[x, y].bomb;
       }
 
-      var pickBombLocations = function(width, height, bombCount)
+      $scope.pickBombLocations = function(width, height, bombCount)
       {
 	  // Get the indexes
 	  // Yes, it would be more efficient to do this at the
@@ -72,13 +75,15 @@ mineControllers.controller('Game', ['$scope',
       }
 
       var possiblyIncrement = function(board, x, y) {
-	  // If board doesn't have a bomb at (x,y), increment the count
-	  if(! $scope.bombAt(board, x, y)) {
+	  // Position x,y has a bomb next to it. Increment that count.
+	  // Was originally checking against
+	  if(/*! $scope.bombAt(board, x, y)*/ true) {
 	      //console.log("Incrementing a neighbor at (", x, ", ", y, ")");
 	      // This next line seems to be failing miserably:
 	      //board[x, y] += 1;
-	      currentCount = parseInt(board[x, y]);
-	      board[x, y] = currentCount+1;
+	      /*currentCount = board[x, y].neighboring_bombs;
+	      board[x, y].neighboring_bombs = currentCount+1;*/
+	      board[x, y].neighboring_bombs++;
 	  }
       }
 
@@ -133,7 +138,14 @@ mineControllers.controller('Game', ['$scope',
 		  row.forEach(function(column) {
 		      //console.log("Appending: " + JSON.stringify(column));
 		      try {
-			  result += " " + column;
+			  var ch = ''
+			  if(column.bomb) {
+			      ch = '!';
+			  }
+			  else {
+			      ch = column.neighboring_bombs;
+			  }
+			  result += " " + ch;
 		      }
 		      catch (e) {
 			  console.log("Have something illegal...well, somewhere");

@@ -21,6 +21,38 @@ describe('Minesweeper controllers', function(){
 	  expect(scope.time).toBe(0);
       }));
 
+      describe('Select bomb locations', function() {
+	  it('should fill a 10x10 square', inject(function() {
+	      var locs = scope.pickBombLocations(10, 10, 100);
+	      expect(locs.length).toBe(100);
+
+	      for(var i=0; i<100; i++)
+	      {
+		  var loc = locs[i];
+		  for(var j=i+1; j<100; j++)
+		  {
+		      // What are the odds this will actually work?
+		      expect(loc).not.toBe(locs[j]);
+		  }
+	      }
+	  }));
+
+	  it('should do interesting things with a 100x100 square', inject(function() {
+	      var locs = scope.pickBombLocations(100, 100, 100);
+	      expect(locs.length).toBe(100);
+
+	      for(var i=0; i<100; i++)
+	      {
+		  var loc = locs[i];
+		  for(var j=i+1; j<100; j++)
+		  {
+		      // What are the odds this will actually work?
+		      expect(loc).not.toBe(locs[j]);
+		  }
+	      }
+	  }));
+      });
+
       describe('Build board', function() {
 	  var generatedBoard;
 	  beforeEach(function() {
@@ -53,7 +85,7 @@ describe('Minesweeper controllers', function(){
 	      for (var i=0; i<generatedBoard.length; i++) {
 		  var row = generatedBoard[i];
 		  for(var j=0; j<row.length; j++) {
-		      if(row[j] == "bomb!") {
+		      if(row[j].bomb) {
 			  n++;
 		      }
 		  }
