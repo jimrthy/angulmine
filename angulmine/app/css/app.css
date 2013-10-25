@@ -28,3 +28,12 @@
   content: "";
   padding: 0;
 }
+
+.playing-field table {
+  border-spacing:0px;
+}
+
+.hidden button {
+  padding:10px;
+  margin:1px black solid;
+}
