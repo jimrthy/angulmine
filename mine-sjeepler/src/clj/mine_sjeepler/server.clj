@@ -8,6 +8,11 @@
             [ring.util.response :as response])
   (:gen-class))
 
+;;; The problem with this next approach is that I have to call (reset) any time
+;;; I want to make a change to the template.
+;;; Actually, that isn't enough.
+;;; The template really shouldn't be changing often, but that's still annoying
+;;; to remember.
 (enlive/deftemplate page
   (io/resource "index.html")
   []
@@ -17,33 +22,6 @@
 (defroutes site
   (resources "/")
   (GET "/*" req (page)))
-
-(comment (defn render-app []
-           {:status 200
-            :headers {"Content-Type" "text/html"}
-            :body
-            (str "<!DOCTYPE html>"
-                 "<html>"
-                 "<head>"
-                 "<link rel=\"stylesheet\" href=\"css/page.css\" />"
-                 "</head>"
-                 "<body>"
-                 "<div>"
-                 "<p id=\"clickable\">Click me!</p>"
-                 "</div>"
-                 "<script src=\"js/cljs.js\"></script>"
-                 "</body>"
-                 "</html>")}))
-
-(comment
-  ;; FIXME: Switch to compojure
-  ;; Interesting note: going to a the URL of a page with a template under
-  ;; public seems to bypass this.
-  ;; Probably because of wrap-resource below.
-  (defn handler [request]
-    (if (= "/" (:uri request))
-      (response/redirect "/help.html")
-      (render-app))))
 
 ;;; TODO: This doesn't particularly belong in here.
 ;;; Or maybe this is the absolute perfect place for it.  

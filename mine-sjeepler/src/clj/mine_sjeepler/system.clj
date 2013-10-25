@@ -17,6 +17,8 @@
   ;; Set up to have a REPL connected to the browser.
   ;; FIXME: This absolutely should not make it into anything like a production
   ;; system.
+  ;; Well, unless there's some sort of point to making hacking easier on the client side
+  ;; Honestly, this almost seems to belong strictly in user.clj in the dev profile.
   (swap! (:repl-env system) (fn [_]
                               (reset! cemerick.austin.repls/browser-repl-env
                                       (cemerick.austin/repl-env))))
@@ -24,10 +26,12 @@
   system)
 
 (defn stop [system]
-  (.stop @(:server system))
-  (reset! (:server system) nil)
+  (when-let [server-atom (:server system)]
+    (when-let [server @server-atom]
+      (.stop server)
+      (reset! (:server system) nil)))
 
   (reset! cemerick.austin.repls/browser-repl-env nil)
-  (reset! (:repl-env system nil))
+  (reset! (:repl-env system) nil)
 
   system)
