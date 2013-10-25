@@ -1,7 +1,9 @@
 (defproject mine-sjeepler "0.1.0-SNAPSHOT"
   :description "Minesweeper clone, to show off my mad javascript skillz"
   :url "http://example.com/FIXME"
-  :dependencies [[org.clojure/clojure "1.5.1"]
+  :dependencies [[compojure "1.1.5"]
+                 [enlive "1.1.4"]
+                 [org.clojure/clojure "1.5.1"]
                  [org.clojure/clojurescript "0.0-1934"]
                  [ring "1.1.8"]
                  [spyscope "0.1.3"]]

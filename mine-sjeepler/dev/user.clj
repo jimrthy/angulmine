@@ -16,6 +16,9 @@
 (defn start []
   (alter-var-root #'system sys/start))
 
+(defn switch-to-cljs []
+  (cemerick.austin.repls/cljs-repl @(:repl-env system)))
+
 (defn stop []
   (alter-var-root #'system 
                   (fn [s]

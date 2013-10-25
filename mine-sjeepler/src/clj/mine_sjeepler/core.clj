@@ -1,5 +1,5 @@
 (ns mine-sjeepler.core
-  (:require [scrabbletris.system :as sys]))
+  (:require [mine-sjeepler.system :as sys]))
 
 (defn -main []
   ;; Actually, I do want to join on this. But it shouldn't matter.
