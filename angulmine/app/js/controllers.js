@@ -40,9 +40,9 @@ mineControllers.controller('Game', ['$scope',
 	  for(var i=0; i<width; i++) {
 	      var row = [];
 	      for(var j=0; j<height; j++) {
-		  cell = {bomb: false,
-			  hidden: true,
-			  neighboring_bombs: 0};
+		  var cell = {bomb: false,
+			      hidden: true,
+			      neighboring_bombs: 0};
 		  row.push(cell);
 	      }
 	      board.push(row);
@@ -52,7 +52,70 @@ mineControllers.controller('Game', ['$scope',
 
       // Much more useful than something so short and simple looks.
       $scope.bombAt = function(board, x, y) {
-	  return board[x, y].bomb;
+	  var result;
+
+	  try {
+	      result = board[x][y].bomb;
+	  }
+	  catch(e) {
+	      var msg = "";
+	      try {
+		  var cols = board.length;
+		  if(x >= cols) {
+		      msg += "Trying to access column " + x + " out of " + board.length+1;
+		  }
+		  else
+		  {
+		      var row = board[x];
+		      try {
+			  var height = row.length;
+			  if(y >= height) {
+			      msg += "Trying to access row " + y + " out of " + row.length+1;
+			  }
+			  else {
+			      msg += "Failed to access the bomb member from the cell at (" + x + ", " + y + ")."
+			      msg += "\nout of (" + cols + ", " + height + ")\nValue: ";
+			      if(row[y]) {
+				  msg += row[y];
+				  msg += "\nwhich should be exactly the same memory reference as: " + board[x][y];
+			      }
+			      else {
+				  msg += "missing";
+			      }
+			  }
+		      }
+		      catch(ex1) {
+			  // TODO: Refactor this into its own debugging method
+			  var propList="";
+			  if (typeof(row) != "undefined") {
+			      for(var propName in row) {
+				  if(typeof(row[propName] != "undefined")) {
+				      propList += (propName + ": " + row[propName] + "\n");
+				  }
+				  else {
+				      propList += (propName + ": undefined\n");
+				  }
+			      }
+			      msg += "Row at " + x + ":\n\t" + propList;
+			  }
+			  else
+			  {
+			      msg += "Row at " + x + " is undefined\n";
+			      msg += "Playing Board:\n'" + board + "'";
+			  }
+			  msg += "\n" + ex1;
+		      }
+		  }
+	      }
+	      catch(ex) {
+		  msg += "Apparently I've gotten something completely bogus into here. Looks like board has no length\n";
+		  msg += "Internal exception: " + ex;
+		  // TODO: Really should dump out board's keys.
+	      }
+	      console.log(msg);
+	      throw e;
+	  }
+	  return result;
       }
 
       $scope.pickBombLocations = function(width, height, bombCount)
@@ -83,7 +146,7 @@ mineControllers.controller('Game', ['$scope',
 	      //board[x, y] += 1;
 	      /*currentCount = board[x, y].neighboring_bombs;
 	      board[x, y].neighboring_bombs = currentCount+1;*/
-	      board[x, y].neighboring_bombs++;
+	      board[x][y].neighboring_bombs++;
 	  }
       }
 
@@ -163,7 +226,7 @@ mineControllers.controller('Game', ['$scope',
 	  result += delimeter;
 	  
 	  console.log("Getting ready to print the board:");
-	  console.log(result);
+	  //console.log(result);
 	  return result;
       }
 
@@ -179,7 +242,7 @@ mineControllers.controller('Game', ['$scope',
 
 	      if($scope.bombAt(blankBoard, x, y)) {
 		  console.log("Oops");
-		  console.log($scope.prettyPrint(blankBoard));
+		  //console.log($scope.prettyPrint(blankBoard));
 		  throw { message: "Shuffle failed",
 			  board: blankBoard,
 			  location: loc,
@@ -188,7 +251,8 @@ mineControllers.controller('Game', ['$scope',
 
 	      // Updating blankBoard in place like this is BAD!
 	      // But expedient. This is definitely a 'fix it later' sort of thing. 
-	      blankBoard[x, y] = 'bomb!';
+	      //blankBoard[x][y] = 'bomb!';
+	      blankBoard[x][y].bomb = true;
 
 	      incrementNeighborCounts(blankBoard, x, y);
 	  });
@@ -202,7 +266,7 @@ mineControllers.controller('Game', ['$scope',
 	  //console.log(playingField);
 
 	  //console.log("Picking bomb locations");
-	  var bombLocations = pickBombLocations(width, height, bombCount);
+	  var bombLocations = $scope.pickBombLocations(width, height, bombCount);
 	  console.log("Bombs at:");
 	  //console.log(bombLocations);
 

@@ -53,11 +53,12 @@ describe('Minesweeper controllers', function(){
 	  }));
       });
 
-      describe('Build board', function() {
+      describe('Build taller board', function() {
 	  var generatedBoard;
 	  beforeEach(function() {
-	      console.log("Build Board Before Test:");
+	      console.log("Build Taller Board Before Test:");
 	      try {
+		  // TODO: Duplicate this, but with the dimensions flipped.
 		  scope.newGame(99, 101, 50);
 	      }
 	      catch(e) {
@@ -74,13 +75,13 @@ describe('Minesweeper controllers', function(){
 	      console.log("A");
 	      generatedBoard = scope.board;
 	      console.log('Running a test on board:');
-	      console.log(generatedBoard);
+	      //console.log(generatedBoard);
 	  });
 
 	  it('should build a board with the proper number of mines', inject(function() {
 	      var n = 0;
 
-	      console.log("Getting ready to count all the mines in: ", generatedBoard);
+	      //console.log("Getting ready to count all the mines in: ", generatedBoard);
 
 	      for (var i=0; i<generatedBoard.length; i++) {
 		  var row = generatedBoard[i];
@@ -92,10 +93,12 @@ describe('Minesweeper controllers', function(){
 	      }
 
 	      expect(n).toBe(50);
+
+	      console.log("Mine count checked");
 	  }));
 
 	  it('should mark each square with the proper count of adjacent mines', inject(function() {
-	      var countNeighboringbombs = function(board, x, y) {
+	      var countNeighboringBombs = function(board, x, y) {
 		  // This is *very* similar to the way I'm dealing with setting up these
 		  // numbers in the first place (c.f. populateBoard).
 		  // Really should write this in a drastically
@@ -160,15 +163,27 @@ describe('Minesweeper controllers', function(){
 		  return n;
 	      }
 
+	      console.log("Start verifying neighbor counts");
+	      var failed = false;
 	      for (var i=0; i<generatedBoard.length; i++) {
 		  var row = generatedBoard[i];
 		  for (var j=0; j<row.length; j++) {
-		      if(!scope.bombAt(i, j)) {
-			  var neighboringBombsFound = countNeighboringBombs(generatedBoard, i, j);
-			  expect(generatedBoard[i, j]).toBe(neighboringBombsFound);
+		      try {
+			  if(!scope.bombAt(generatedBoard, i, j)) {
+			      var neighboringBombsFound = countNeighboringBombs(generatedBoard, i, j);
+			      expect(generatedBoard[i, j]).toBe(neighboringBombsFound);
+			  }
+		      }
+		      catch(e) {
+			  var msg = "Failed checking for bomb at position (" + i + ", " + j + "). ";
+			  msg += "\nException: " + e;
+			  msg += "\nContinuing just because this is so ridiculous";
+			  console.log(msg);
+			  failed = true;
 		      }
 		  }
 	      }
+	      expect(failed).toBe(false);
 	  }));
 
 	  it('should build a board of the proper dimensions', inject(function() {
@@ -182,8 +197,4 @@ describe('Minesweeper controllers', function(){
 	  }));
       });
   });
-
-  it('should ....', inject(function() {
-    //spec body
-  }));
 });
