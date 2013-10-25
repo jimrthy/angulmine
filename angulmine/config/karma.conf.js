@@ -23,6 +23,10 @@ module.exports = function(config){
             'karma-jasmine'       
             ],
 
+    // Needed for:
+    // https://github.com/angular/angular-seed/issues/110
+    exclude : ['app/lib/angular/angular-loader*.js'],
+
     junitReporter : {
       outputFile: 'test_out/unit.xml',
       suite: 'unit'
