@@ -56,7 +56,7 @@ describe('Minesweeper controllers', function(){
       describe('Build taller board', function() {
 	  var generatedBoard;
 	  beforeEach(function() {
-	      console.log("Build Taller Board Before Test:");
+	      //console.log("Build Taller Board Before Test:");
 	      try {
 		  // TODO: Duplicate this, but with the dimensions flipped.
 		  scope.newGame(99, 101, 50);
@@ -72,9 +72,9 @@ describe('Minesweeper controllers', function(){
 		  // Correction: it's a shame that I don't know the testing tools well enough
 		  // yet to do so.
 	      }
-	      console.log("A");
+	      //console.log("A");
 	      generatedBoard = scope.board;
-	      console.log('Running a test on board:');
+	      //console.log('Running a test on board:');
 	      //console.log(generatedBoard);
 	  });
 
@@ -94,7 +94,7 @@ describe('Minesweeper controllers', function(){
 
 	      expect(n).toBe(50);
 
-	      console.log("Mine count checked");
+	      //console.log("Mine count checked");
 	  }));
 
 	  it('should mark each square with the proper count of adjacent mines', inject(function() {
@@ -163,7 +163,7 @@ describe('Minesweeper controllers', function(){
 		  return n;
 	      }
 
-	      console.log("Start verifying neighbor counts");
+	      //console.log("Start verifying neighbor counts");
 	      var failed = false;
 	      for (var i=0; i<generatedBoard.length; i++) {
 		  var row = generatedBoard[i];

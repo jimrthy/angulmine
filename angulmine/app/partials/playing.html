@@ -1,12 +1,17 @@
-<h1>FIXME: Totally wrong!</h1>
-<p>This is already annoying. Generate it programmatically instead</p>
 <button ng-click="newGame(8, 8, 10)">:-)</button>
 <div>
-  <span>Flags: <span class="report">{{flags}}</span></span>
-  <span>Time: <span class="report">{{time}}</span></span>
+  <span>Bombs: <span class="report">{{bombs-flags}}</span></span>
+  <!-- FIXME: time logic doesn't belong in here. Even if this works. -->
+  <span>Time: <span class="report">{{if(started) { time.now-started; } else { 0; } }}</span></span>
 </div>
 <table class="playing-field">
   <tbody>
+    <!-- Theoretically, at least, it seems like life's supposed to be this easy.
+	 I suspect, at the very least, I need to massage my data structures -->
+    <tr ng-repeat="row in board">
+      <td ng-repeat="cell in row" ng-click="tentativeClick(cell)">{{cell | filter}}</td>
+    </tr>
+    <!-- Hopefully, that's straightforward enough that all the rest of this can just go away
     <tr>
       <td><button class="hidden" ng-click="tentative-click(0, 0)"></td>
       <td><button class="hidden" ng-click="tentative-click(1, 0)"></td>
@@ -87,5 +92,6 @@
       <td><button class="hidden" ng-click="tentative-click(6, 7)"></td>
       <td><button class="hidden" ng-click="tentative-click(7, 7)"></td>
     </tr>
+    -->
   </tbody>
 </table>
