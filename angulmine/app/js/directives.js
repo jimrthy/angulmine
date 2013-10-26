@@ -19,7 +19,7 @@ angular.module('minesweepApp.directives', []).
 	    // OK. This is the object that I care about.
 	    // Where do I go from here?
 	    // Ah. cell is actually a string. WTH?
-	    var cell = attrs.mineCell;
+	    var cellDescription = attrs.mineCell;
 	    // I think this was probably a mistake...but it gave me a good picture
 	    // of what's going on. :-/
 	    /*var plist = ''
@@ -28,10 +28,24 @@ angular.module('minesweepApp.directives', []).
 	    }
 	    var msg = plist;
 	    alert(msg);*/
+	    // Causes all sorts of horrible errors:
+	    //var cell = eval(cellDescription);
+	    // Totally useless: I want the object. Not the JSON.
+	    //var cell = cellDescription;
+	    var cell = scope.cell;
+	    // Seriously. Don't do this.
+	    //alert(scope);
 
 	    // Update element based upon cell's state:
-	    var msg = '';
+	    var msg = cellDescription + " (a " + typeof(cellDescription) + ") -- which amounts to: "
+	    + cell + "\n";
 	    var result = ' ';
+
+	    // Maybe what I actually want is inside scope?
+	    /*msg += "\nScope:\n";
+	    for (var prop in scope) {
+		msg += prop + ": " + scope[prop] + "\n";
+	    }*/
 
 	    for(var prop in cell) {
 		msg += prop + ": ";
