@@ -4,8 +4,8 @@
 // Declare app level module which depends on filters, and services
 angular.module('minesweepApp', [
   'ngRoute',
-    // Really should either use these or delete them
     'minesweepApp.filters',
+    // Really should either use this or delete it
     /*'myApp.services',*/
     'minesweepApp.directives',
   'minesweep.controllers'

@@ -16,6 +16,7 @@ mineControllers.factory('time', function($timeout) {
 
 mineControllers.controller('Game', ['$scope', 'time',
     function($scope, time) {
+	// TODO: Put the model into its own object.
 	$scope.started = false;
 	$scope.flags = 0;
 	$scope.bombs = 0;
@@ -170,6 +171,7 @@ mineControllers.controller('Game', ['$scope', 'time',
 
 	var visitNeighbors = function(board, x, y, f) {
 	    // Helper function. Apply f to each cell that borders (x, y) in board.
+	    console.log("Visiting the neighbors of the cell at (" + x + ", " + y + ")");
 
 	    // Column to the left
 	    if(x > 0) {
@@ -298,17 +300,20 @@ mineControllers.controller('Game', ['$scope', 'time',
 	    $scope.started = false;
 	}
 
+	var clickCellLocation = function(board, x, y) {
+	    var cell = board[x][y];
+	    return $scope.tentativeClick(cell);
+	}
+
 	$scope.tentativeClick = function(cell) {
 	    // We're getting here...what's going wrong?
-	    console.log("Click!");
+	    //console.log("Click!");
 
 	    // If this square's already been revealed...we shouldn't actually get here.
 	    // Except that a double-click should act as a click on all adjacent non-revealed
 	    // squares that don't have flags.
 	    // That's a double-click handler. Currently out of scope.
 	    if(cell.hidden) {
-		console.log("Revealing hidden cell: (" + cell.x + ", " + cell.y +")");
-		cell.hidden = false;
 
 		// Kick off the game if it hasn't started already:
 		if(! $scope.started ) {
@@ -319,6 +324,9 @@ mineControllers.controller('Game', ['$scope', 'time',
 		// Now things get interesting
 		// Really should protect this square if it's flagged.
 		if (!cell.flagged) {
+
+		    console.log("Revealing hidden cell: (" + cell.x + ", " + cell.y +")");
+		    cell.hidden = false;
 
 		    // If there's a bomb here, the game's over.
 		    if(cell.bomb) {
@@ -335,12 +343,12 @@ mineControllers.controller('Game', ['$scope', 'time',
 			});
 		    }
 		    else {
-			// If there is an adjacent bomb, reveal this square's count
-			cell.hidden = false;
-
 			// If there are no adjacent bombs, recursively click all hidden neighbors.
 			if(0 == cell.neighboring_bombs) {
-			    visitNeighbors($scope.board, cell.x, cell.y, $scope.tentativeClick);
+			    visitNeighbors($scope.board, cell.x, cell.y, clickCellLocation);
+			}
+			else {
+			    console.log(cell.neighboring_bombs + " bombs next door");
 			}
 		    }
 		}
@@ -351,9 +359,9 @@ mineControllers.controller('Game', ['$scope', 'time',
 		}
 	    }
 	    else {
-		// Odds arr, this is recursion at work.
-		// Arrr.
+		// Odds are, this is recursion at work.
 		console.log("Why'd you click a revealed cell? (" + cell.x + ", " + cell.y + ")");
+		console.log(cell);
 	    }
 	}
 

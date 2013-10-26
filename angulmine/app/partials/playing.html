@@ -11,7 +11,7 @@
     <tr ng-repeat="row in board">
       <!-- The problem with this approach is that the click handler doesn't really have any good way
 	   to do styling. But that should be what the filter is for anyway -->
-      <td ng-repeat="cell in row" ng-click="tentativeClick(cell)" class="hidden" mine-cell={{cell}}></td>
+      <td ng-repeat="cell in row" ng-click="tentativeClick(cell)" class="hidden" mine-cell="cell"></td>
     </tr>
   </tbody>
 </table>
