@@ -12,11 +12,13 @@ angular.module('minesweepApp.directives', []).
     directive('playTime', function($timeout) {
 	function link(scope, element, attrs) {
 	    // Pulled almost line-by-line from http://docs.angularjs.org/guide/directive
+	    var timeoutId;
+
 	    function updateTime() {
 		var display = 0;
 		if(scope.started) {
 		    var current = new Date();
-		    display = floor ((current - scope.started) / 1000);
+		    display = Math.floor ((current - scope.started) / 1000);
 		}
 		element.text(display);
 	    }
