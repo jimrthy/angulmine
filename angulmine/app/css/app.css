@@ -29,11 +29,11 @@
   padding: 0;
 }
 
-.playing-field table {
+table.playing-field {
   border-spacing:0px;
 }
 
-.hidden td {
+td.hidden {
   padding:10px;
-  margin:1px black solid;
+  border:1px black solid;
 }
