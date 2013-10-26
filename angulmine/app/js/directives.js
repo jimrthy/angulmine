@@ -16,18 +16,17 @@ angular.module('minesweepApp.directives', []).
 	    //    attrs: an Object. Hmm...
 	    //var msg = "element: " + element + "\n" + "Attributes:\n" + attrs + "\n";
 
-	    // I think this was probably a mistake...but it gave me a good picture
-	    // of what's going on. :-/
-	    /* var plist = ''
-	    for(var prop in attrs) {
-		plist += prop + ": " + attrs[prop] + "\n";
-	    }
-	    var msg = plist;
-	    alert(msg); */
-
 	    // OK. This is the object that I care about.
 	    // Where do I go from here?
 	    var cell = attrs.mineCell;
+	    // I think this was probably a mistake...but it gave me a good picture
+	    // of what's going on. :-/
+	    /*var plist = ''
+	    for(var prop in cell) {
+		plist += prop + ": " + cell[prop] + "\n";
+	    }
+	    var msg = plist;
+	    alert(msg);*/
 
 	    // Update element based upon cell's state:
 	    var msg = '';
