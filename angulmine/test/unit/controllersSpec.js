@@ -3,6 +3,8 @@
 describe('Minesweeper controllers', function(){
   beforeEach(module('minesweep.controllers'));
 
+    // FIXME: Almost all of this needs to move into servicesSpec
+
   describe('Initialization basics', function() {
       var scope, ctrl;
 
@@ -12,8 +14,9 @@ describe('Minesweeper controllers', function(){
       }));
 
       it('should start off with no flags at time 0', inject(function() {
-	  expect(scope.flags).toBe(0);
-	  expect(scope.time).toBe(0);
+	  expect(scope.getFlags).toBe(0);
+	  // This should be the current time...no real way to test it any more.
+	  expect(scope.getTime).not.toBe(0);
       }));
 
       describe('Select bomb locations', function() {
@@ -83,6 +86,8 @@ describe('Minesweeper controllers', function(){
 	  }));
 
 	  it('should mark each square with the proper count of adjacent mines', inject(function() {
+	      // This test is *slow*. Should probably be moved to e2e.
+	      // Even though, technically, it's still just a unit test.
 	      var countNeighboringBombs = function(board, x, y) {
 		  // This is *very* similar to the way I'm dealing with setting up these
 		  // numbers in the first place (c.f. populateBoard).
