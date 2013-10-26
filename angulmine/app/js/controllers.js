@@ -126,7 +126,7 @@ mineControllers.controller('Game', ['$scope', 'time',
 		catch(ex) {
 		    msg += "Apparently I've gotten something completely bogus into here. Looks like board has no length\n";
 		    msg += "Internal exception: " + ex;
-		    // TODO: Really should dump out board's keys.
+		    // TODO: Really should dump out board's prototype and value.
 		}
 		console.log(msg);
 		throw e;
@@ -156,6 +156,8 @@ mineControllers.controller('Game', ['$scope', 'time',
 	var possiblyIncrement = function(board, x, y) {
 	    // Position x,y has a bomb next to it. Increment that count.
 	    // Was originally checking against
+	    // This is mostly just crap that should go away...as soon as
+	    // I'm confident that the board's at least vaguely what I want.
 	    if(/*! $scope.bombAt(board, x, y)*/ true) {
 		//console.log("Incrementing a neighbor at (", x, ", ", y, ")");
 		// This next line seems to be failing miserably:
@@ -168,7 +170,6 @@ mineControllers.controller('Game', ['$scope', 'time',
 
 	var visitNeighbors = function(board, x, y, f) {
 	    // Helper function. Apply f to each cell that borders (x, y) in board.
-
 
 	    // Column to the left
 	    if(x > 0) {
@@ -291,8 +292,9 @@ mineControllers.controller('Game', ['$scope', 'time',
 	    //console.log("New Game: ");
 	    //console.log(playingField);
 	    $scope.board = playingField;
+	    $scope.bombs = bombCount;
 
-	    // Kill the timer
+	    // Kill the timer (until the sucker clicks the first button)
 	    $scope.started = false;
 	}
 

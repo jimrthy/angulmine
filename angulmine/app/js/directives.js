@@ -9,6 +9,58 @@ angular.module('minesweepApp.directives', []).
       elm.text(version);
     };
   }]).
+    directive('mineCell', function() {
+	function link(scope, element, attrs) {
+	    // Q: What do I have here?
+	    // A: element: HTMLTableCellElement
+	    //    attrs: an Object. Hmm...
+	    //var msg = "element: " + element + "\n" + "Attributes:\n" + attrs + "\n";
+
+	    // I think this was probably a mistake...but it gave me a good picture
+	    // of what's going on. :-/
+	    /* var plist = ''
+	    for(var prop in attrs) {
+		plist += prop + ": " + attrs[prop] + "\n";
+	    }
+	    var msg = plist;
+	    alert(msg); */
+
+	    // OK. This is the object that I care about.
+	    // Where do I go from here?
+	    var cell = attrs.mineCell;
+
+	    // Update element based upon cell's state:
+	    var msg = '';
+	    var result = ' ';
+
+	    if(cell.hidden) {
+		msg += "H";
+		if(cell.flagged) {
+		    result = 'F';
+		    msg += "F";
+		}
+	    }
+	    else {
+		if(cell.bomb) {
+		    // Player just lost.
+		    result = ':(';
+		    msg += "Too bad. So sad.";
+		}
+		else {
+		    if(cell.neighboring_bombs > 0) {
+			result = cell.neighboring_bombs;
+			msg += "Danger: " + result;
+		    }
+		    else {
+			msg += "Clear :-)";
+		    }
+		}
+	    }
+	    console.log(msg);
+	    element.text(result);
+	}
+	return { link: link };
+    }).
     directive('playTime', function($timeout) {
 	function link(scope, element, attrs) {
 	    // Pulled almost line-by-line from http://docs.angularjs.org/guide/directive

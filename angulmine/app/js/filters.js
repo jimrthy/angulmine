@@ -12,6 +12,8 @@ angular.module('minesweepApp.filters', []).
 	// This approach doesn't seem to be a horrible performance for something this small,
 	// but it feels ugly.
 	// Especially since it doesn't seem to work correctly.
+
+	// Totally moved into directives. Needs to completely and totally go away.
 	return function(cell) {
 	    var msg = '';
 	    var result = ' ';

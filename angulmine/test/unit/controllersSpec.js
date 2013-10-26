@@ -1,7 +1,5 @@
 'use strict';
 
-/* jasmine specs for controllers go here */
-
 describe('Minesweeper controllers', function(){
   beforeEach(module('minesweep.controllers'));
 
@@ -9,11 +7,8 @@ describe('Minesweeper controllers', function(){
       var scope, ctrl;
 
       beforeEach(inject(function( $rootScope, $controller) {
-	  //console.log("Look at me!!!");
 	  scope = $rootScope.$new();
 	  ctrl = $controller('Game', {$scope: scope});
-	  //console.log("Scope: ", scope);
-	  //console.log("Controller: ", ctrl);
       }));
 
       it('should start off with no flags at time 0', inject(function() {
@@ -31,7 +26,6 @@ describe('Minesweeper controllers', function(){
 		  var loc = locs[i];
 		  for(var j=i+1; j<100; j++)
 		  {
-		      // What are the odds this will actually work?
 		      expect(loc).not.toBe(locs[j]);
 		  }
 	      }
@@ -46,7 +40,6 @@ describe('Minesweeper controllers', function(){
 		  var loc = locs[i];
 		  for(var j=i+1; j<100; j++)
 		  {
-		      // What are the odds this will actually work?
 		      expect(loc).not.toBe(locs[j]);
 		  }
 	      }
@@ -56,7 +49,6 @@ describe('Minesweeper controllers', function(){
       describe('Build taller board', function() {
 	  var generatedBoard;
 	  beforeEach(function() {
-	      //console.log("Build Taller Board Before Test:");
 	      try {
 		  // TODO: Duplicate this, but with the dimensions flipped.
 		  scope.newGame(99, 101, 50);
@@ -64,25 +56,20 @@ describe('Minesweeper controllers', function(){
 	      catch(e) {
 		  var msg = "Setting up a New Game failed: " + e.message;
 		  //msg += e;
-		  //console.log(e);
 		  console.log(msg);
 
 		  // It's almost a shame that there's no way to mark this entire piece of the
-		  // test as a failure.
+		  // test as a failure if we get here.
 		  // Correction: it's a shame that I don't know the testing tools well enough
 		  // yet to do so.
 	      }
-	      //console.log("A");
 	      generatedBoard = scope.board;
-	      //console.log('Running a test on board:');
-	      //console.log(generatedBoard);
 	  });
 
 	  it('should build a board with the proper number of mines', inject(function() {
 	      var n = 0;
 
 	      //console.log("Getting ready to count all the mines in: ", generatedBoard);
-
 	      for (var i=0; i<generatedBoard.length; i++) {
 		  var row = generatedBoard[i];
 		  for(var j=0; j<row.length; j++) {
@@ -93,8 +80,6 @@ describe('Minesweeper controllers', function(){
 	      }
 
 	      expect(n).toBe(50);
-
-	      //console.log("Mine count checked");
 	  }));
 
 	  it('should mark each square with the proper count of adjacent mines', inject(function() {
