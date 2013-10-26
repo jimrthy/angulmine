@@ -2,7 +2,7 @@
 <div>
   <span>Bombs: <span class="report">{{bombs-flags}}</span></span>
   <!-- FIXME: time logic doesn't belong in here. Even if this works. -->
-  <span>Time: <span class="report">{{if(started) { time.now-started; } else { 0; } }}</span></span>
+  <span>Time: <span class="report">{{ time.now-started }}</span></span>
 </div>
 <table class="playing-field">
   <tbody>

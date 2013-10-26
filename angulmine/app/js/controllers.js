@@ -4,12 +4,22 @@
 
 var mineControllers = angular.module('minesweep.controllers', []);
 
-mineControllers.controller('Game', ['$scope',
-    function($scope) {
+mineControllers.factory('time', function($timeout) {
+    var time = {};
+
+    (function tick() {
+	time.now = new Date();
+	$timeout(tick, 1000);
+    })();
+    return time;
+});
+
+mineControllers.controller('Game', ['$scope', 'time',
+    function($scope, time) {
 	$scope.started = false;
 	$scope.flags = 0;
 	$scope.bombs = 0;
-	$scope.time = 0;
+	$scope.time = time;
 	$scope.board = [];
 
 	var Random = function(top) {
@@ -156,46 +166,48 @@ mineControllers.controller('Game', ['$scope',
 	    }
 	}
 
-	var incrementNeighborCounts = function(board, x, y) {
-	    // There's a bomb at x,y. Warn the neighbors!
-	    
-	    // Details to increment neighbor counts.
-	    // This sort of code is always annoying and contentious.
-	    // There are few enough details that it doesn't seem worth
-	    // trying to get fancy.
+	var visitNeighbors = function(board, x, y, f) {
+	    // Helper function. Apply f to each cell that borders (x, y) in board.
+
 
 	    // Column to the left
 	    if(x > 0) {
 		if(y > 0) {
-		    possiblyIncrement(board, x-1, y-1);
+		    f(board, x-1, y-1);
 		}
-		possiblyIncrement(board, x-1, y);
+		f(board, x-1, y);
 		if(y < board[x-1].length-1) {
-		    possiblyIncrement(board, x-1, y+1)
+		    f(board, x-1, y+1)
 		};		  
 	    }
 
 	    // Center column 
 	    if(y > 0) {
-		possiblyIncrement(board, x, y-1);
+		f(board, x, y-1);
 	    }
 	    if(y < board[x].length-1) {
-		possiblyIncrement(board, x, y+1);
+		f(board, x, y+1);
 	    }
 
 	    // Right-hand column
 	    if(x+1 < board.length) {
 		if(y > 0) {
-		    possiblyIncrement(board, x+1, y-1);
+		    f(board, x+1, y-1);
 		}
-		possiblyIncrement(board, x+1, y);
+		f(board, x+1, y);
 		if(y+1 < board[x+1].length) {
-		    possiblyIncrement(board, x+1, y+1);
+		    f(board, x+1, y+1);
 		}
 	    }
 	}
 
+	var incrementNeighborCounts = function(board, x, y) {
+	    // There's a bomb at x,y. Warn the neighbors!
+	    visitNeighbors(board, x, y, possiblyIncrement);
+	}
+
 	$scope.prettyPrint = function(board) {
+	    // For when something goes horribly wrong.
 	    console.log("Pretty printing");
 
 	    var delimeter = "*****************************************************\n";
@@ -248,7 +260,6 @@ mineControllers.controller('Game', ['$scope',
 
 		if($scope.bombAt(blankBoard, x, y)) {
 		    console.log("Oops");
-		    //console.log($scope.prettyPrint(blankBoard));
 		    throw { message: "Shuffle failed",
 			    board: blankBoard,
 			    location: loc,
@@ -283,24 +294,39 @@ mineControllers.controller('Game', ['$scope',
 	}
 
 	$scope.tentativeClick = function(cell) {
-	    // Kick off the game if it hasn't started already:
-	    if(! $scope.started ) {
-		$scope.started = time.now;
-	    }
-
 	    // If this square's already been revealed...we shouldn't actually get here.
 	    // Except that a double-click should act as a click on all adjacent non-revealed
 	    // squares that don't have flags.
 	    // That's a double-click handler. Currently out of scope.
+	    if(cell.hidden) {
 
-	    // Really should protect this square if it's flagged.
+		// Kick off the game if it hasn't started already:
+		if(! $scope.started ) {
+		    $scope.started = time.now;
+		}
 
-	    // If there's a bomb here, the game's over.
 
-	    // If there is an adjacent bomb, reveal this square's count
+		// Really should protect this square if it's flagged.
+		if (!cell.flagged) {
 
-	    // If there are no adjacent bombs, recursively click all hidden neighbors.
-	    throw "Not Implemented Yet";
+		    // If there's a bomb here, the game's over.
+		    if(cell.bomb) {
+			alert("You lose! (Yes, I need to update everything interesting)");
+			$scope.started = false;
+		    }
+		    else {
+			// If there is an adjacent bomb, reveal this square's count
+			cell.hidden = false;
+
+			// If there are no adjacent bombs, recursively click all hidden neighbors.
+			if(0 == cell.neighboring_bombs) {
+			    visitNeighbors($scope.board, cell.y, cell.y, $scope.tentativeClick);
+			}
+		    }
+		}
+		// If the user clicked on a cell with a flag...assume it was a mistake
+		// TODO: Really ought to add some sort of warning animation
+	    }
 	}
 
 	// Recommended by
