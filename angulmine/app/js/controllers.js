@@ -8,7 +8,7 @@ mineControllers.factory('time', function($timeout) {
     var time = {};
 
     (function tick() {
-	time.now = new Date();
+	time.now = Math.floor(new Date() / 1000);
 	$timeout(tick, 1000);
     })();
     return time;

@@ -1,97 +1,13 @@
 <button ng-click="newGame(8, 8, 10)">:-)</button>
 <div>
   <span>Bombs: <span class="report">{{bombs-flags}}</span></span>
-  <!-- FIXME: time logic doesn't belong in here. Even if this works. -->
+  <!-- FIXME: make this stop when the game isn't active -->
   <span>Time: <span class="report">{{ time.now-started }}</span></span>
 </div>
 <table class="playing-field">
   <tbody>
-    <!-- Theoretically, at least, it seems like life's supposed to be this easy.
-	 I suspect, at the very least, I need to massage my data structures -->
     <tr ng-repeat="row in board">
-      <td ng-repeat="cell in row" ng-click="tentativeClick(cell)">{{cell | filter}}</td>
+      <td ng-repeat="cell in row" ng-click="tentativeClick(cell)" class='hidden'>{{cell | mineFilter }}</td>
     </tr>
-    <!-- Hopefully, that's straightforward enough that all the rest of this can just go away
-    <tr>
-      <td><button class="hidden" ng-click="tentative-click(0, 0)"></td>
-      <td><button class="hidden" ng-click="tentative-click(1, 0)"></td>
-      <td><button class="hidden" ng-click="tentative-click(2, 0)"></td>
-      <td><button class="hidden" ng-click="tentative-click(3, 0)"></td>
-      <td><button class="hidden" ng-click="tentative-click(4, 0)"></td>
-      <td><button class="hidden" ng-click="tentative-click(5, 0)"></td>
-      <td><button class="hidden" ng-click="tentative-click(6, 0)"></td>
-      <td><button class="hidden" ng-click="tentative-click(7, 0)"></td>
-    </tr>
-    <tr>
-      <td><button class="hidden" ng-click="tentative-click(0, 1)"></td>
-      <td><button class="hidden" ng-click="tentative-click(1, 1)"></td>
-      <td><button class="hidden" ng-click="tentative-click(2, 1)"></td>
-      <td><button class="hidden" ng-click="tentative-click(3, 1)"></td>
-      <td><button class="hidden" ng-click="tentative-click(4, 1)"></td>
-      <td><button class="hidden" ng-click="tentative-click(5, 1)"></td>
-      <td><button class="hidden" ng-click="tentative-click(6, 1)"></td>
-      <td><button class="hidden" ng-click="tentative-click(7, 1)"></td>
-    </tr>
-    <tr>
-      <td><button class="hidden" ng-click="tentative-click(0, 2)"></td>
-      <td><button class="hidden" ng-click="tentative-click(1, 2)"></td>
-      <td><button class="hidden" ng-click="tentative-click(2, 2)"></td>
-      <td><button class="hidden" ng-click="tentative-click(3, 2)"></td>
-      <td><button class="hidden" ng-click="tentative-click(4, 2)"></td>
-      <td><button class="hidden" ng-click="tentative-click(5, 2)"></td>
-      <td><button class="hidden" ng-click="tentative-click(6, 2)"></td>
-      <td><button class="hidden" ng-click="tentative-click(7, 2)"></td>
-    </tr>
-    <tr>
-      <td><button class="hidden" ng-click="tentative-click(0, 3)"></td>
-      <td><button class="hidden" ng-click="tentative-click(1, 3)"></td>
-      <td><button class="hidden" ng-click="tentative-click(2, 3)"></td>
-      <td><button class="hidden" ng-click="tentative-click(3, 3)"></td>
-      <td><button class="hidden" ng-click="tentative-click(4, 3)"></td>
-      <td><button class="hidden" ng-click="tentative-click(5, 3)"></td>
-      <td><button class="hidden" ng-click="tentative-click(6, 3)"></td>
-      <td><button class="hidden" ng-click="tentative-click(7, 3)"></td>
-    </tr>
-    <tr>
-      <td><button class="hidden" ng-click="tentative-click(0, 4)"></td>
-      <td><button class="hidden" ng-click="tentative-click(1, 4)"></td>
-      <td><button class="hidden" ng-click="tentative-click(2, 4)"></td>
-      <td><button class="hidden" ng-click="tentative-click(3, 4)"></td>
-      <td><button class="hidden" ng-click="tentative-click(4, 4)"></td>
-      <td><button class="hidden" ng-click="tentative-click(5, 4)"></td>
-      <td><button class="hidden" ng-click="tentative-click(6, 4)"></td>
-      <td><button class="hidden" ng-click="tentative-click(7, 4)"></td>
-    </tr>
-    <tr>
-      <td><button class="hidden" ng-click="tentative-click(0, 5)"></td>
-      <td><button class="hidden" ng-click="tentative-click(1, 5)"></td>
-      <td><button class="hidden" ng-click="tentative-click(2, 5)"></td>
-      <td><button class="hidden" ng-click="tentative-click(3, 5)"></td>
-      <td><button class="hidden" ng-click="tentative-click(4, 5)"></td>
-      <td><button class="hidden" ng-click="tentative-click(5, 5)"></td>
-      <td><button class="hidden" ng-click="tentative-click(6, 5)"></td>
-      <td><button class="hidden" ng-click="tentative-click(7, 5)"></td>
-    </tr>
-    <tr>
-      <td><button class="hidden" ng-click="tentative-click(0, 6)"></td>
-      <td><button class="hidden" ng-click="tentative-click(1, 6)"></td>
-      <td><button class="hidden" ng-click="tentative-click(2, 6)"></td>
-      <td><button class="hidden" ng-click="tentative-click(3, 6)"></td>
-      <td><button class="hidden" ng-click="tentative-click(4, 6)"></td>
-      <td><button class="hidden" ng-click="tentative-click(5, 6)"></td>
-      <td><button class="hidden" ng-click="tentative-click(6, 6)"></td>
-      <td><button class="hidden" ng-click="tentative-click(7, 6)"></td>
-    </tr>
-    <tr>
-      <td><button class="hidden" ng-click="tentative-click(0, 7)"></td>
-      <td><button class="hidden" ng-click="tentative-click(1, 7)"></td>
-      <td><button class="hidden" ng-click="tentative-click(2, 7)"></td>
-      <td><button class="hidden" ng-click="tentative-click(3, 7)"></td>
-      <td><button class="hidden" ng-click="tentative-click(4, 7)"></td>
-      <td><button class="hidden" ng-click="tentative-click(5, 7)"></td>
-      <td><button class="hidden" ng-click="tentative-click(6, 7)"></td>
-      <td><button class="hidden" ng-click="tentative-click(7, 7)"></td>
-    </tr>
-    -->
   </tbody>
 </table>

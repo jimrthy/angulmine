@@ -5,8 +5,8 @@
 angular.module('minesweepApp', [
   'ngRoute',
     // Really should either use these or delete them
-    /*'myApp.filters',
-  'myApp.services',
+    'minesweepApp.filters',
+    /*'myApp.services',
   'myApp.directives',*/
   'minesweep.controllers'
 ]).
