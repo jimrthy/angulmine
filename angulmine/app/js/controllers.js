@@ -277,7 +277,7 @@ mineControllers.controller('Game', ['$scope', 'time',
 
 	$scope.newGame = function(width, height, bombCount) {
 	    // Absolutely called for side-effects.
-	    //console.log("Building a blank board");
+	    console.log("Building a blank board");
 	    var playingField = buildBlankBoard(width, height);
 	    //console.log("Initial Playing Field:");
 	    //console.log(playingField);
@@ -312,8 +312,13 @@ mineControllers.controller('Game', ['$scope', 'time',
 
 		    // If there's a bomb here, the game's over.
 		    if(cell.bomb) {
-			alert("You lose! (Yes, I need to update everything interesting)");
+			alert("You lose!");
 			$scope.started = false;
+			$scope.board.forEach(function(row) {
+			    row.forEach(function(cell) {
+				cell.hidden = false;
+			    })
+			});
 		    }
 		    else {
 			// If there is an adjacent bomb, reveal this square's count
