@@ -291,6 +291,9 @@ mineControllers.controller('Game', ['$scope', 'time',
 	    //console.log("New Game: ");
 	    //console.log(playingField);
 	    $scope.board = playingField;
+
+	    // Kill the timer
+	    $scope.started = false;
 	}
 
 	$scope.tentativeClick = function(cell) {
