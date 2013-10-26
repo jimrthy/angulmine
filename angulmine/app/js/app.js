@@ -6,8 +6,8 @@ angular.module('minesweepApp', [
   'ngRoute',
     // Really should either use these or delete them
     'minesweepApp.filters',
-    /*'myApp.services',
-  'myApp.directives',*/
+    /*'myApp.services',*/
+  'minesweepApp.directives',
   'minesweep.controllers'
 ]).
 config(['$routeProvider', function($routeProvider) {

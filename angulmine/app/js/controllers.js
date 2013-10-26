@@ -4,15 +4,15 @@
 
 var mineControllers = angular.module('minesweep.controllers', []);
 
-mineControllers.factory('time', function($timeout) {
+/* mineControllers.factory('time', function($timeout) {
     var time = {};
 
     (function tick() {
-	time.now = Math.floor(new Date() / 1000);
+	time.now = new Date();
 	$timeout(tick, 1000);
     })();
     return time;
-});
+}); */
 
 mineControllers.controller('Game', ['$scope', 'time',
     function($scope, time) {
@@ -66,8 +66,8 @@ mineControllers.controller('Game', ['$scope', 'time',
 	    return board;
 	}
 
-	// Much more useful than something so short and simple looks.
 	$scope.bombAt = function(board, x, y) {
+	    // Does board have a bomb at position (x,y)?
 	    var result;
 	    
 	    try {
@@ -299,10 +299,11 @@ mineControllers.controller('Game', ['$scope', 'time',
 	    // squares that don't have flags.
 	    // That's a double-click handler. Currently out of scope.
 	    if(cell.hidden) {
+		cell.hidden = false;
 
 		// Kick off the game if it hasn't started already:
 		if(! $scope.started ) {
-		    $scope.started = time.now;
+		    $scope.started = new Date();
 		}
 
 

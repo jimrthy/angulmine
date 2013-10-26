@@ -9,23 +9,36 @@ angular.module('minesweepApp.filters', []).
     }
   }]).
     filter('mineFilter', function() {
+	// This approach doesn't seem to be a horrible performance for something this small,
+	// but it feels ugly.
+	// Especially since it doesn't seem to work correctly.
 	return function(cell) {
+	    var msg = '';
 	    var result = ' ';
+
 	    if(cell.hidden) {
+		msg += "H";
 		if(cell.flagged) {
 		    result = 'F';
+		    msg += "F";
 		}
 	    }
 	    else {
 		if(cell.bomb) {
 		    // Player just lost.
 		    result = ':(';
+		    msg += "Too bad. So sad.";
 		}
 		else {
 		    if(cell.neighboring_bombs > 0) {
 			result = cell.neighboring_bombs;
+			msg += "Danger: " + result;
+		    }
+		    else {
+			msg += "Clear :-)";
 		    }
 		}
 	    }
+	    console.log(msg);
 	}
     });
