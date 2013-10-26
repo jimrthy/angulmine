@@ -299,26 +299,35 @@ mineControllers.controller('Game', ['$scope', 'time',
 	}
 
 	$scope.tentativeClick = function(cell) {
+	    // We're getting here...what's going wrong?
+	    console.log("Click!");
+
 	    // If this square's already been revealed...we shouldn't actually get here.
 	    // Except that a double-click should act as a click on all adjacent non-revealed
 	    // squares that don't have flags.
 	    // That's a double-click handler. Currently out of scope.
 	    if(cell.hidden) {
+		console.log("Revealing hidden cell: (" + cell.x + ", " + cell.y +")");
 		cell.hidden = false;
 
 		// Kick off the game if it hasn't started already:
 		if(! $scope.started ) {
 		    $scope.started = new Date();
+		    console.log("Starting new game at: " + $scope.started);
 		}
 
-
+		// Now things get interesting
 		// Really should protect this square if it's flagged.
 		if (!cell.flagged) {
 
 		    // If there's a bomb here, the game's over.
 		    if(cell.bomb) {
 			alert("You lose!");
+			// This can be a painful way to start the game...but at least you get
+			// to see where you would have gone wrong.
 			$scope.started = false;
+			// Reveal every cell in the board.
+			// FIXME: Why isn't this propagating?
 			$scope.board.forEach(function(row) {
 			    row.forEach(function(cell) {
 				cell.hidden = false;
@@ -331,12 +340,20 @@ mineControllers.controller('Game', ['$scope', 'time',
 
 			// If there are no adjacent bombs, recursively click all hidden neighbors.
 			if(0 == cell.neighboring_bombs) {
-			    visitNeighbors($scope.board, cell.y, cell.y, $scope.tentativeClick);
+			    visitNeighbors($scope.board, cell.x, cell.y, $scope.tentativeClick);
 			}
 		    }
 		}
-		// If the user clicked on a cell with a flag...assume it was a mistake
-		// TODO: Really ought to add some sort of warning animation
+		else {
+		    console.log("Cell (" + cell.x + ", " + cell.y + ") has been flagged");
+		    // If the user clicked on a cell with a flag...assume it was a mistake
+		    // TODO: Really ought to add some sort of warning animation
+		}
+	    }
+	    else {
+		// Odds arr, this is recursion at work.
+		// Arrr.
+		console.log("Why'd you click a revealed cell? (" + cell.x + ", " + cell.y + ")");
 	    }
 	}
 

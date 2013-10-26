@@ -18,6 +18,7 @@ angular.module('minesweepApp.directives', []).
 
 	    // OK. This is the object that I care about.
 	    // Where do I go from here?
+	    // Ah. cell is actually a string. WTH?
 	    var cell = attrs.mineCell;
 	    // I think this was probably a mistake...but it gave me a good picture
 	    // of what's going on. :-/
@@ -31,6 +32,17 @@ angular.module('minesweepApp.directives', []).
 	    // Update element based upon cell's state:
 	    var msg = '';
 	    var result = ' ';
+
+	    for(var prop in cell) {
+		msg += prop + ": ";
+		if(typeof(cell[prop]) != 'undefined') {
+		    msg += cell[prop];
+		}
+		else {
+		    msg += "undefined";
+		}
+		msg += "\n";
+	    }
 
 	    if(cell.hidden) {
 		msg += "H";
@@ -51,10 +63,11 @@ angular.module('minesweepApp.directives', []).
 			msg += "Danger: " + result;
 		    }
 		    else {
-			msg += "Clear :-)";
+			msg += "Clear -- " + cell;
 		    }
 		}
 	    }
+	    msg = "Directed cell at (" + cell['x'] + ", " + cell['y'] + "): " + result + "\n" + msg;
 	    console.log(msg);
 	    element.text(result);
 	}
