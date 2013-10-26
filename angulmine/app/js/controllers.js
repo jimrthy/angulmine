@@ -4,7 +4,7 @@
 
 var mineControllers = angular.module('minesweep.controllers', []);
 
-/* mineControllers.factory('time', function($timeout) {
+mineControllers.factory('time', function($timeout) {
     var time = {};
 
     (function tick() {
@@ -12,7 +12,7 @@ var mineControllers = angular.module('minesweep.controllers', []);
 	$timeout(tick, 1000);
     })();
     return time;
-}); */
+});
 
 mineControllers.controller('Game', ['$scope', 'time',
     function($scope, time) {
