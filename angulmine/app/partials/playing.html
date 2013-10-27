@@ -2,13 +2,13 @@
 <button ng-click="newGame(25, 25, 100)">:-|</button>
 <button ng-click="newGame(40, 40, 300)">:*-(</button>
 <div>
-  <span>Bombs: <span class="report">{{bombs - flags}}</span></span>
+  <span>Bombs: <span class="report">{{ UnflaggedBombs }}</span></span>
   <!-- FIXME: make this stop when the game isn't active -->
   <span>Time: <span class="report" play-time></span></span>
 </div>
 <table class="playing-field">
   <tbody>
-    <tr ng-repeat="row in getBoard()">
+    <tr ng-repeat="row in GetBoard()">
       <!-- The problem with this approach is that the click handler doesn't really have any good way
 	   to do styling. But that should be what the filter is for anyway -->
       <td ng-repeat="cell in row" ng-click="onClick(cell)" class="hidden" mine-cell="cell"></td>

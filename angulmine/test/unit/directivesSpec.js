@@ -20,7 +20,10 @@ describe('directives', function() {
 	// FIXME: What on earth is going on here?
 	it('should hide hidden cell', function() {
 	    inject(function($compile, $rootScope) {
-		var element = $compile('<span mine-cell></span>')($rootScope);
+		var s = '<ul><li ng-repeat="row in GetBoard()">';
+		s += '<ul><li ng-repeat="cell in row"><span mine-cell="cell"></span></li></ul>';
+		s += '</li></ul>';
+		var element = $compile(s)($rootScope);
 		expect(element.text()).toEqual(' ');
 	    });
 	});

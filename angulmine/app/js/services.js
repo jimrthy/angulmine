@@ -7,23 +7,28 @@
 // In this case it is a simple value service.
 var services = angular.module('minesweepApp.services', []);
 
-//services.value('version', '0.1');
+// At least one person on StackOverflow managed to break things by declaring the module twice.
+// Getting rid of the version service does not help in the slightest.
+services.value('version', '0.1');
 
 services.factory('minesweepApi', function() {
-	var model = { started: false,
-		      flags: 0,
+    // At least one example I ran across online has this returning a
+    // factory function that can then be called to get the service
+    // values. That seems like a great idea, but it doesn't seem to
+    // help with the fundamental issue.
+	var model = { //started: false,
 		      bombs: 0,
-		      time: new Date(),
+		      //time: new Date(),
 		      board: [] };
 
 	model.GetBoard = function() {
 	    // FIXME: Do I need to do an angular.copy?
 	    return model.board;
 	};
-	model.GetStarted = function() {
+    /*model.GetStarted = function() {
 	    return model.started;
-	};
-	model.GetFlagCount = function() {
+	};*/
+    /*model.GetFlagCount = function() {
 	    return model.flags;
 	};
 	model.IncrementFlags = function() {
@@ -33,13 +38,13 @@ services.factory('minesweepApi', function() {
 	    if(model.flags > 0) {
 		model.flags--;
 	    }
-	};
+	};*/
 	model.BombCount = function() {
 	    return model.bombs;
 	};
-	model.GetTime = function() {
+    /*model.GetTime = function() {
 	    return model.time;
-	};
+	};*/
 
 	var Random = function(top) {
 	    // Returns a random integer from [0, top)
@@ -276,9 +281,6 @@ services.factory('minesweepApi', function() {
 	    //console.log(playingField);
 	    model.board = playingField;
 	    model.bombs = bombCount;
-
-	    // Kill the timer (until the sucker clicks the first button)
-	    model.started = false;
 	}
 
 	var ClickCellLocation = function(board, x, y) {
@@ -286,48 +288,79 @@ services.factory('minesweepApi', function() {
 	    return model.Click(cell);
 	}
 
+    model.SafeReveal = function(board, x, y) {
+	// A non-bomb square was clicked. If it was hidden, show what was behind it.
+	var cell = model.board[x][y];
+	if(cell.hidden) {
+	    cell.hidden = false;
+
+	    // If there are no adjacent bombs, recursively click all hidden neighbors.
+	    if(0 == cell.neighboring_bombs) {
+		visitNeighbors(board, x, y, model.SafeReveal);
+	    }
+	    else {
+		console.log(cell.neighboring_bombs + " bombs next door");
+	    }
+	}
+    }
+
+    var CheckForWinner = function(board) {
+	var result = '';
+
+	if(board.every(function(row) {
+	    return row.every(function(cell) {
+		// If a non-bomb cell is hidden, the player
+		// hasn't won.
+		// If a bomb cell gets revealed, the player loses,
+		// but that's easier to check for right at the top
+		// of the click event.
+		return !cell.hidden || cell.bomb;
+	    });
+	})) {
+	    result = 'won';
+	}
+	return result;
+    }
+
 	model.Click = function(cell) {
+	    // Returns false if the game's still going.
+	    // 'dead!' if the user clicked on a bomb
+	    // 'won' if all non-bomb squares have been revealed.
+	    var result = false;
+
 	    // If this square's already been revealed...we shouldn't actually get here.
 	    // Except that a double-click should act as a click on all adjacent non-revealed
 	    // squares that don't have flags.
 	    // That's a double-click handler. Currently out of scope.
 	    if(cell.hidden) {
 
-		// Kick off the game if it hasn't started already:
-		if(! model.started ) {
-		    model.started = new Date();
-		    console.log("Starting playing at: " + model.started);
-		}
-
 		// Now things get interesting
-		// Really should protect this square if it's flagged.
 		if (!cell.flagged) {
 
 		    console.log("Revealing hidden cell: (" + cell.x + ", " + cell.y +")");
-		    cell.hidden = false;
 
 		    // If there's a bomb here, the game's over.
 		    if(cell.bomb) {
 			alert("You lose!");
+
 			// This can be a painful way to start the game...but at least you get
 			// to see where you would have gone wrong.
-			model.started = false;
-
 			// Reveal every cell in the board.
 			model.board.forEach(function(row) {
 			    row.forEach(function(cell) {
 				cell.hidden = false;
 			    })
 			});
+			result = 'dead!';
 		    }
 		    else {
-			// If there are no adjacent bombs, recursively click all hidden neighbors.
-			if(0 == cell.neighboring_bombs) {
-			    visitNeighbors(model.board, cell.x, cell.y, ClickCellLocation);
-			}
-			else {
-			    console.log(cell.neighboring_bombs + " bombs next door");
-			}
+			// This is where life gets really interesting.
+
+			// Show the cell (and its neighbors)
+			model.SafeReveal(model.board, cell.x, cell.y);
+
+			// Is the player a winner?
+			result = CheckForWinner(model.board);
 		    }
 		}
 		else {
@@ -341,6 +374,8 @@ services.factory('minesweepApi', function() {
 		console.log("Why'd you click a revealed cell? (" + cell.x + ", " + cell.y + ")");
 		console.log(cell);
 	    }
+
+	    return result;
 	}
 
 	return model;

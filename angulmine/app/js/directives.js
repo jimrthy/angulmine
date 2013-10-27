@@ -4,37 +4,49 @@
 
 
 angular.module('minesweepApp.directives', []).
-  directive('appVersion', ['version', function(version) {
-    return function(scope, elm, attrs) {
-      elm.text(version);
-    };
-  }]).
+    directive('appVersion', ['version', function(version) {
+	return function(scope, elm, attrs) {
+	    elm.text(version);
+	};
+    }]).
     directive('mineCell', function() {
 	function link(scope, element, attrs) {
-	    var msg = "Scope:\n";
-	    for(var prop in scope) {
-		msg += "\n\t" + prop + ": ";
-		if(typeof(scope[prop]) != 'undefined') {
-		    msg += scope[prop];
+	    var msg = "Performing a Directive on a Cell.\nScope:";
+	    for(var prop in scope.this) {
+		if(prop != '$new' && prop != 'constructor') {
+		    msg += "\n\t" + prop + ": ";
+		    if(typeof(scope[prop]) != 'undefined') {
+			msg += scope[prop];
+		    }
+		    else {
+			msg += "Undefined";
+		    }
 		}
 		else {
-		    msg += "Undefined";
+		    msg += "\tconstructor: a big function for setting up a really nifty object";
 		}
 	    }
+
+	    // This is pretty useless...it looks like it boils down to
+	    // [[HTMLSpanElement]]
 	    msg += "\n\nElement:\n" + element;
+
+	    // And this seems to be a duplication of the root scope.
 	    msg += "\n\nAttributes:\n" + attrs + " (a " + typeof(attrs) + ")";
-	    for(var prop in scope) {
-		msg += "\n\t" + prop + ": ";
-		if(typeof(scope[prop]) != 'undefined') {
-		    msg += scope[prop];
-		}
-		else {
-		    msg += "Undefined";
+	    for(var prop in attrs.mineCell) {
+		if(prop != '$new' && prop != 'constructor') {
+		    msg += "\n\t" + prop + ": ";
+		    if(typeof(scope[prop]) != 'undefined') {
+			msg += scope[prop];
+		    }
+		    else {
+			msg += "Undefined";
+		    }
 		}
 	    }
 	    console.log(msg);
 
-	    var cell = scope.cell;
+	    var cell = attrs.mineCell;
 
 	    // Update element based upon cell's state:
 	    var msg = "Directing: " + cell+ "\n";

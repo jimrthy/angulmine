@@ -12,12 +12,15 @@ describe('Minesweeper controllers', function(){
 	}));
 
 	it('should start off with no flags at time 0', inject(function() {
-	    expect(scope.getFlags()).toBe(0);
+	    expect(scope.GetFlagCount()).toBe(0);
 	    // This should be the current time...no real way to test it any more.
-	    expect(scope.getTime()).not.toBe(0);
+	    expect(scope.Time()).toBe(0);
 	}));
 
 	it('should build a board of the proper dimensions', inject(function() {
+	    scope.NewGame(99, 101, 50);
+	    var generatedBoard = scope.GetBoard();
+
 	    var rowCount = 0;
 	    for(var i=0; i<generatedBoard.length; i++) {
 		var row = generatedBoard[i];
