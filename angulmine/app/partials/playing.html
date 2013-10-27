@@ -8,7 +8,7 @@
 </div>
 <table class="playing-field">
   <tbody>
-    <tr ng-repeat="row in board">
+    <tr ng-repeat="row in getBoard()">
       <!-- The problem with this approach is that the click handler doesn't really have any good way
 	   to do styling. But that should be what the filter is for anyway -->
       <td ng-repeat="cell in row" ng-click="onClick(cell)" class="hidden" mine-cell="cell"></td>

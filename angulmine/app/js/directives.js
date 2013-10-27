@@ -11,6 +11,29 @@ angular.module('minesweepApp.directives', []).
   }]).
     directive('mineCell', function() {
 	function link(scope, element, attrs) {
+	    var msg = "Scope:\n";
+	    for(var prop in scope) {
+		msg += "\n\t" + prop + ": ";
+		if(typeof(scope[prop]) != 'undefined') {
+		    msg += scope[prop];
+		}
+		else {
+		    msg += "Undefined";
+		}
+	    }
+	    msg += "\n\nElement:\n" + element;
+	    msg += "\n\nAttributes:\n" + attrs + " (a " + typeof(attrs) + ")";
+	    for(var prop in scope) {
+		msg += "\n\t" + prop + ": ";
+		if(typeof(scope[prop]) != 'undefined') {
+		    msg += scope[prop];
+		}
+		else {
+		    msg += "Undefined";
+		}
+	    }
+	    console.log(msg);
+
 	    var cell = scope.cell;
 
 	    // Update element based upon cell's state:

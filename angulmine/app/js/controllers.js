@@ -4,6 +4,7 @@
 
 var mineControllers = angular.module('minesweep.controllers', []);
 
+// Q: Does this make sense to move into a service?
 mineControllers.factory('time', function($timeout) {
     var time = {};
 
@@ -15,15 +16,16 @@ mineControllers.factory('time', function($timeout) {
 });
 
 mineControllers.controller('Game', ['$scope', 'time', 'minesweepApi',
-    function($scope, time, minesweepApi) {
-	/*
-	// TODO: Put the model into its own object.
-	$scope.started = false;
-	$scope.flags = 0;
-	$scope.bombs = 0;
-	$scope.time = time;
-	$scope.board = [];
-	*/
+    function($scope, time, minesweepApiProvider) {
+	// Initialization
+	//$scope.api = minesweepService.minesweepApi();
+	$scope.api = minesweepApi();
+
+	$scope.newGame = function(width, height, bombCount) {
+	    minesweepApi.Fresh(width, height, bombCount);
+	};
+	
+	// Getters/setters
 	$scope.getBoard = function() {
 	    return minesweepApi.GetBoard();
 	}
@@ -48,6 +50,13 @@ mineControllers.controller('Game', ['$scope', 'time', 'minesweepApi',
 
 	$scope.bombAt = function(board, x, y) {
 	    return model.bombAt(board, x, y);
+	}
+
+	// Utility
+	$scope.onClick = function(cell) {
+	    // We are definitely getting here...what's going wrong?
+	    //console.log("Click!");
+	    minesweepApi.Click(cell);
 	}
 
 	$scope.prettyPrint = function(board) {
@@ -92,13 +101,7 @@ mineControllers.controller('Game', ['$scope', 'time', 'minesweepApi',
 	    return result;
 	}
 
-
-	$scope.onClick = function(cell) {
-	    // We are definitely getting here...what's going wrong?
-	    //console.log("Click!");
-	    minesweepApi.Click(cell);
-	}
-
+	// Kick things off with a fresh Basic level board
 	// Recommended by
 	// http://stackoverflow.com/questions/15458609/angular-js-how-to-execute-function-on-page-load
 	var init = function() {
