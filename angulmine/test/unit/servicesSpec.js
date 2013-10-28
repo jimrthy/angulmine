@@ -92,6 +92,18 @@ describe('service', function() {
 	      expect(n).toBe(50);
 	  }));
 
+	  it('should fail when out of bounds', inject(function() {
+	      // Honestly, this should throw an exception.
+	      var threw = false;
+	      try {
+		  service.bombAt(1000, 1000);
+	      }
+	      catch(e) {
+		  threw = true;
+	      }
+	      expect(threw).toBe(true);
+	  }));
+
 	  /*
 	  it('should mark each square with the proper count of adjacent mines', inject(function() {
 	      // This test is *slow*. Should probably be moved to e2e.

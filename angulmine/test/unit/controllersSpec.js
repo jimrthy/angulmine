@@ -24,10 +24,10 @@ describe('Minesweeper controllers', function(){
 	    var rowCount = 0;
 	    for(var i=0; i<generatedBoard.length; i++) {
 		var row = generatedBoard[i];
-		expect(row.length).toBe(101);
+		expect(row.length).toBe(99);
 		rowCount++;
 	    }
-	    expect(rowCount).toBe(99);
+	    expect(rowCount).toBe(101);
 	}));
     });
 });

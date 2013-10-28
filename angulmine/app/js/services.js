@@ -68,9 +68,11 @@ services.factory('minesweepApi', function() {
 	    // TODO: This is, realistically, worth turning into its own object.
 	    // If nothing else, this is where the bombAt function really should live.
 	    var board = [];
-	    for(var i=0; i<width; i++) {
+	    // This has to be built up rotated 90 degrees, because of
+	    // the way tables are laid out.
+	    for(var i=0; i<height; i++) {
 		var row = [];
-		for(var j=0; j<height; j++) {
+		for(var j=0; j<width; j++) {
 		    var cell = {bomb: false,
 				hidden: true,
 				flagged: false,
@@ -92,29 +94,30 @@ services.factory('minesweepApi', function() {
 	    var result;
 
 	    try {
-		result = board[x][y].bomb;
+		result = board[y][x].bomb;
 	    }
 	    catch(e) {
 		var msg = "";
 		try {
-		    var cols = board.length;
-		    if(x >= cols) {
-			msg += "Trying to access column " + x + " out of " + board.length+1;
+		    var rows = board.length;
+		    if(y >= rows) {
+			msg += "Trying to access row " + y + " out of " + (rows+1);
 		    }
 		    else
 		    {
-			var row = board[x];
+			var row = board[y];
 			try {
-			    var height = row.length;
-			    if(y >= height) {
-				msg += "Trying to access row " + y + " out of " + row.length+1;
+			    var width = row.length;
+			    if(x >= width) {
+				msg += "Trying to access column " + x + " out of " + (width+1);
 			    }
 			    else {
 				msg += "Failed to access the bomb member from the cell at (" + x + ", " + y + ")."
-				msg += "\nout of (" + cols + ", " + height + ")\nValue: ";
-				if(row[y]) {
-				    msg += row[y];
-				    msg += "\nwhich should be exactly the same memory reference as: " + board[x][y];
+				msg += "\nout of (" + width + ", " + rows + ")\nValue: ";
+				if(row[x]) {
+				    msg += row[x];
+				    // Of course, this next access is precisely what got us into trouble in the first place.
+				    msg += "\nwhich should be exactly the same memory reference as: " + board[y][x];
 				}
 				else {
 				    msg += "missing";
@@ -185,7 +188,7 @@ services.factory('minesweepApi', function() {
 		//board[x, y] += 1;
 		/*currentCount = board[x, y].neighboring_bombs;
 		  board[x, y].neighboring_bombs = currentCount+1;*/
-		board[x][y].neighboring_bombs++;
+		board[y][x].neighboring_bombs++;
 	    }
 	}
 
@@ -199,7 +202,7 @@ services.factory('minesweepApi', function() {
 		    f(board, x-1, y-1);
 		}
 		f(board, x-1, y);
-		if(y < board[x-1].length-1) {
+		if(y < board.length-1) {
 		    f(board, x-1, y+1)
 		};		  
 	    }
@@ -208,17 +211,17 @@ services.factory('minesweepApi', function() {
 	    if(y > 0) {
 		f(board, x, y-1);
 	    }
-	    if(y < board[x].length-1) {
+	    if(y < board.length-1) {
 		f(board, x, y+1);
 	    }
 
 	    // Right-hand column
-	    if(x+1 < board.length) {
+	    if(x+1 < board[y].length) {
 		if(y > 0) {
 		    f(board, x+1, y-1);
 		}
 		f(board, x+1, y);
-		if(y+1 < board[x+1].length) {
+		if(y+1 < board.length) {
 		    f(board, x+1, y+1);
 		}
 	    }
@@ -251,7 +254,7 @@ services.factory('minesweepApi', function() {
 		// But expedient. This is definitely a 'fix it later' sort of thing.
 		// Especially since, at this point, I'm really just simulating
 		// what would actually be happening on the server.
-		blankBoard[x][y].bomb = true;
+		blankBoard[y][x].bomb = true;
 
 		incrementNeighborCounts(blankBoard, x, y);
 	    });
@@ -261,7 +264,7 @@ services.factory('minesweepApi', function() {
 	    // Kick off a new game.
 
 	    // Absolutely called for side-effects.
-	    console.log("Building a blank " + width + "x" + height + "board with " + bombCount + " bombs");
+	    console.log("Building a blank " + width + "x" + height + " board with " + bombCount + " bombs");
 	    var playingField = buildBlankBoard(width, height);
 	    //console.log("Initial Playing Field:");
 	    //console.log(playingField);
@@ -279,13 +282,13 @@ services.factory('minesweepApi', function() {
 	}
 
 	var ClickCellLocation = function(board, x, y) {
-	    var cell = board[x][y];
+	    var cell = board[y][x];
 	    return model.Click(cell);
 	}
 
     model.SafeReveal = function(board, x, y) {
 	// A non-bomb square was clicked. If it was hidden, show what was behind it.
-	var cell = model.board[x][y];
+	var cell = model.board[y][x];
 	if(cell.hidden) {
 	    cell.hidden = false;
 
@@ -317,61 +320,61 @@ services.factory('minesweepApi', function() {
 	return result;
     }
 
-	model.Click = function(cell) {
-	    // Returns false if the game's still going.
-	    // 'dead!' if the user clicked on a bomb
-	    // 'won' if all non-bomb squares have been revealed.
-	    var result = false;
+    model.Click = function(cell) {
+	// Returns false if the game's still going.
+	// 'dead!' if the user clicked on a bomb
+	// 'won' if all non-bomb squares have been revealed.
+	var result = false;
 
-	    // If this square's already been revealed...we shouldn't actually get here.
-	    // Except that a double-click should act as a click on all adjacent non-revealed
-	    // squares that don't have flags.
-	    // That's a double-click handler. Currently out of scope.
-	    if(cell.hidden) {
+	// If this square's already been revealed...we shouldn't actually get here.
+	// Except that a double-click should act as a click on all adjacent non-revealed
+	// squares that don't have flags.
+	// That's a double-click handler. Currently out of scope.
+	if(cell.hidden) {
 
-		// Now things get interesting
-		if (!cell.flagged) {
+	    // Reveal!
+	    if (!cell.flagged) {
 
-		    console.log("Revealing hidden cell: (" + cell.x + ", " + cell.y +")");
+		console.log("Revealing hidden cell: (" + cell.x + ", " + cell.y +")");
 
-		    // If there's a bomb here, the game's over.
-		    if(cell.bomb) {
-			alert("You lose!");
+		// If there's a bomb here, the game's over.
+		if(cell.bomb) {
+		    alert("You lose!");
 
-			// This can be a painful way to start the game...but at least you get
-			// to see where you would have gone wrong.
-			// Reveal every cell in the board.
-			model.board.forEach(function(row) {
-			    row.forEach(function(cell) {
-				cell.hidden = false;
-			    })
-			});
-			result = 'dead!';
-		    }
-		    else {
-			// This is where life gets really interesting.
-
-			// Show the cell (and its neighbors)
-			model.SafeReveal(model.board, cell.x, cell.y);
-
-			// Is the player a winner?
-			result = CheckForWinner(model.board);
-		    }
+		    // This can be a painful way to start the game...but at least you get
+		    // to see where you would have gone wrong.
+		    // Reveal every cell in the board.
+		    model.board.forEach(function(row) {
+			row.forEach(function(cell) {
+			    cell.hidden = false;
+			})
+		    });
+		    result = 'dead!';
 		}
 		else {
-		    console.log("Cell (" + cell.x + ", " + cell.y + ") has been flagged");
-		    // If the user clicked on a cell with a flag...assume it was a mistake
-		    // TODO: Really ought to add some sort of warning animation
+		    // Woohoo! Clear stuff!
+
+		    // Show the cell (and maybe its neighbors)
+		    model.SafeReveal(model.board, cell.x, cell.y);
+
+		    // Is the player a winner?
+		    result = CheckForWinner(model.board);
 		}
 	    }
 	    else {
-		// Odds are, this is recursion at work.
-		console.log("Why'd you click a revealed cell? (" + cell.x + ", " + cell.y + ")");
-		console.log(cell);
+		console.log("Cell (" + cell.x + ", " + cell.y + ") has been flagged");
+		// If the user clicked on a cell with a flag...assume it was a mistake
+		// TODO: Really ought to add some sort of warning animation
 	    }
-
-	    return result;
 	}
+	else {
+	    // Odds are, this is recursion at work.
+	    console.log("Why'd you click a revealed cell? (" + cell.x + ", " + cell.y + ")");
+	    console.log(cell);
+	}
+	
+	return result;
+    }
 
-	return model;
+    return model;
 });
