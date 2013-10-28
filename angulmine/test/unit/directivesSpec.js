@@ -61,7 +61,10 @@ describe('directives', function() {
 		}
 		console.debug(msg);
 
-		expect(element.text()).toEqual(' ');
+		var listItem = element.find(".hidden");
+		// The html is undefined here.
+		expect(listItem.html()).toEqual('&nbsp');
+		// listItem.text() is just an empty string. What's going on?
 	    });
 	});
     });
