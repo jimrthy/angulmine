@@ -18,12 +18,12 @@ mineControllers.factory('time', function($timeout) {
     return time;
 });
 
-mineControllers.controller('Visual', ['$scope', 'minesweepApi',
+/*mineControllers.controller('Visual', ['$scope', 'minesweepApi',
   function($scope, minesweepApi) {
       $scope.GetBoard = function() {
 	  return minesweepApi.GetBoard();
       };
-}]);
+}]);*/
 
 mineControllers.controller('Game', ['$scope', 'time', 'minesweepApi',
     function($scope, time, minesweepApi) {
@@ -33,9 +33,18 @@ mineControllers.controller('Game', ['$scope', 'time', 'minesweepApi',
 			      flag_count: 0,
 			      finish_time: false
 			    };
+	$scope.cached_board = {};
+	$scope.$watch('cached_board', function(newValue, oldValue) {
+	    console.debug("Change!");
+	    }, true);
 
 	$scope.NewGame = function(width, height, bombCount) {
 	    minesweepApi.Fresh(width, height, bombCount);
+	    // Can't start with a deep copy: some error about missing a push() method.
+	    //angular.copy(minesweepApi.GetBoard(), $scope.cached_board);
+	    // Shouldn't matter: we're getting a reference anyway.
+	    $scope.cached_board = minesweepApi.GetBoard();
+
 	    // Redundant the first time through. Oh well.
 	    $scope.localModel.start_time = false;
 	    $scope.localModel.finish_time = false;
@@ -43,7 +52,8 @@ mineControllers.controller('Game', ['$scope', 'time', 'minesweepApi',
 	
 	// Getters/setters
 	$scope.GetBoard = function() {
-	    return minesweepApi.GetBoard();
+	    //return minesweepApi.GetBoard();
+	    return $scope.cached_board;
 	}
 	$scope.GetStarted = function() {
 	    return minesweepApi.GetStarted();
@@ -78,7 +88,7 @@ mineControllers.controller('Game', ['$scope', 'time', 'minesweepApi',
 	    }
 	    msg += "Delta: " + deltaInMillis + "\n";
 	    var result = Math.floor(deltaInMillis/1000);
-	    console.debug(msg);
+	    //console.debug(msg);
 	    return result;
 	}
 
@@ -97,17 +107,34 @@ mineControllers.controller('Game', ['$scope', 'time', 'minesweepApi',
 	// Utility
 	$scope.onClick = function(cell) {
 	    // We are definitely getting here...what's going wrong?
-	    console.log("Click!");
+	    //console.log("Click!");
 
 	    // Possibly start the timer
 	    if(!$scope.localModel.start_time) {
 		$scope.localModel.start_time = new Date();
 		console.log("Starting playing at: " + $scope.localModel.start_time);
 	    }
+
+	    // The view doesn't get updated using this next approach:
+
+	    // TODO: Do something different depending on whether the player won or lost
 	    var game_over = minesweepApi.Click(cell);
 	    if(game_over) {
 		$scope.localModel.finish_time = new Date();
 	    }
+	    // This fails: $apply is already in progress.
+	    /*
+	    $scope.$apply(function() {
+		var game_over = minesweepApi.Click(cell);
+		if(game_over) {
+		    $scope.localModel.finish_time = new Date();
+		}
+	    });
+	    */
+	    // Q: What happens if I add this?
+	    // A: This same sort of infinitely recursive mess that happens if I try
+	    // to do an angular.copy in the service.
+	    //angular.copy(minesweepApi.GetBoard(), $scope.cached_board);
 	}
 
 	$scope.prettyPrint = function(board) {
