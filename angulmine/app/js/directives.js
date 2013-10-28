@@ -215,16 +215,16 @@ mod.directive('ngRightClick', function($parse) {
     console.debug("Registering a right-click handler");
 
     return function(scope, element, attrs) {
-	console.debug("Right: " + attrs.ngRightClick);
+	//console.debug("Right: " + attrs.ngRightClick);
 
 	var fn = $parse(attrs.ngRightClick);
 	element.bind('contextmenu', function(event) {
 	    scope.$apply(function() {
-		console.debug("Replacing the context menu with " + fn);
+		//console.debug("Replacing the context menu with " + fn);
 		event.preventDefault();
 		try {
 		    fn(scope, {$event:event});
-		    console.debug("That should have worked");
+		    //console.debug("That should have worked");
 		}
 		catch(e) {
 		    var msg = "Right click handler failed: " + e;

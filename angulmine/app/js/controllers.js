@@ -114,33 +114,20 @@ mineControllers.controller('Game', ['$scope', 'time', 'minesweepApi',
 		console.log("Starting playing at: " + $scope.localModel.start_time);
 	    }
 
-	    // The view doesn't get updated using this next approach:
-
 	    // TODO: Do something different depending on whether the player won or lost
 	    var game_over = minesweepApi.Click(cell);
 	    if(game_over) {
 		$scope.localModel.finish_time = new Date();
-	    }
-	    // This fails: $apply is already in progress.
-	    /*
-	    $scope.$apply(function() {
-		var game_over = minesweepApi.Click(cell);
-		if(game_over) {
-		    $scope.localModel.finish_time = new Date();
+
+		if('won' == game_over) {
+		    alert("Congratulations! You won!");
 		}
-	    });
-	    */
-	    // Q: What happens if I add this?
-	    // A: This same sort of infinitely recursive mess that happens if I try
-	    // to do an angular.copy in the service.
-	    //angular.copy(minesweepApi.GetBoard(), $scope.cached_board);
+	    }
 	}
 
 	$scope.onRightClick = function(cell) {
-	    // FIXME: Why isn't this getting called?
-
-	    console.debug("Here!");
-	    console.debug("Toggling the flag at (" + cell.x + ", " + cell.y + ") from " + cell.flagged);
+	    /*console.debug("Here!");
+	    console.debug("Toggling the flag at (" + cell.x + ", " + cell.y + ") from " + cell.flagged);*/
 	    var flag = !cell.flagged;
 	    // This should update board and bombCount also.
 	    if(flag) {
