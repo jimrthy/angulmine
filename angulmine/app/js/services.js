@@ -12,29 +12,12 @@ var services = angular.module('minesweepApp.services', []);
 services.value('version', '0.1');
 
 services.factory('minesweepApi', function() {
-    // At least one example I ran across online has this returning a
-    // factory function that can then be called to get the service
-    // values. That seems like a great idea, but it doesn't seem to
-    // help with the fundamental issue.
 	var model = { //started: false,
 		      bombs: 0,
 		      //time: new Date(),
 		      board: [] };
 
 	model.GetBoard = function() {
-	    // Q: Do I need to do an angular.copy?
-	    // At least one stackoverflow answer implied that I most definitely do.
-	    // A: It seems pretty definitely not. I'm not sure why that article
-	    // recommended it...it's just about creating a deep copy
-	    // of my 2-d array of cells.
-	    // I most definitely want to pass around a reference that can
-	    // be updated using angular's data binding.
-	    // TODO: look into why this was recommended.
-	    // If nothing else, I didn't understand the use case there.
-
-	    // This next line causes some serious conniptions.
-	    //return angular.copy(model.board);
-	    // Model changes don't get propagated to the view using this next approach.
 	    return model.board;
 	};
 	model.BombCount = function() {
@@ -46,7 +29,6 @@ services.factory('minesweepApi', function() {
 	    var seed = Math.random();
 	    return Math.floor(seed * top);
 	}
-
 	var shuffle = function(vals)
 	{
 	    // Shamelessly stolen from http://www.merlyn.demon.co.uk/js-shufl.htm#FnB
@@ -68,6 +50,7 @@ services.factory('minesweepApi', function() {
 	    // TODO: This is, realistically, worth turning into its own object.
 	    // If nothing else, this is where the bombAt function really should live.
 	    var board = [];
+
 	    // This has to be built up rotated 90 degrees, because of
 	    // the way tables are laid out.
 	    for(var i=0; i<height; i++) {

@@ -47,6 +47,7 @@ mineControllers.controller('Game', ['$scope', 'time', 'minesweepApi',
 	    // Redundant the first time through. Oh well.
 	    $scope.localModel.start_time = false;
 	    $scope.localModel.finish_time = false;
+	    $scope.localModel.flag_count = 0;
 	};
 	
 	// Getters/setters
@@ -60,12 +61,6 @@ mineControllers.controller('Game', ['$scope', 'time', 'minesweepApi',
 	$scope.GetFlagCount = function() {
 	    return $scope.localModel.flag_count;
 	}
-	/*$scope.IncrementFlags = function() {
-	    $scope.localModel.flag_count++;
-	}
-	$scope.DecrementFlags = function() {
-	    $scope.localModel.flag_count--;
-	}*/
 	$scope.BombCount = function() {
 	    return minesweepApi.BombCount();
 	}
