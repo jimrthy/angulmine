@@ -33,13 +33,8 @@ particularly familiar with.
 
 ## LICENSE
 
-Right now, there really isn't one. The pieces of this code built on the Angular-Seed project
-were released under the MIT license by google.
+Copyright 2013 James Gatannah.
 
-I'll probably release my pieces under something like the GPL when I have time to loop back around
-to it.
+Distributed under the AGPL.
 
-Until then, let's just consider it Copyright 2013 James Gatannah.
-
-It's not like there's anything in here that anyone sensible would really want to reuse yet
-anyway.
+TODO: Add the header to each and every source file.
