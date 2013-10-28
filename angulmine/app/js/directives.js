@@ -76,7 +76,6 @@ mod.directive('mineCell', function() {
 	var result = 'X';
 
 	if(cell.hidden) {
-	    //alert("Hello");
 	    msg += "Hidden cell\n";
 	    if(cell.flagged) {
 		result = 'F';
@@ -98,7 +97,7 @@ mod.directive('mineCell', function() {
 		    msg += "No hidden class...how can I verify which classes are available?\n";
 		}
 		// Q: Should this be applied to the attrs instead?
-		element.removeClass('hidden');
+		//element.removeClass('hidden');
 
 		if(cell.neighboring_bombs > 0) {
 		    result = cell.neighboring_bombs;
@@ -111,13 +110,15 @@ mod.directive('mineCell', function() {
 		}
 	    }
 	}
-	msg += "\nDirected cell at (" + cell.x + ", " + cell.y + "): '" + result + "'\n" + msg;
+	//msg += "\nDirected cell at (" + cell.x + ", " + cell.y + "): '" + result + "'\n" + msg;
 	console.log(msg);
 	// Fails because there's no such method
 	//element.innerHTML(result);
 	// Doesn't work at all.
 	//element.innerHTML = result;
-	element.innerText = result;
+	//element.innerText = result;
+	//element.innerText(result);
+	element.text(result);
 
 	//return result;
     }
