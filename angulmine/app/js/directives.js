@@ -152,7 +152,7 @@ mod.directive('mineCell', function() {
 			       }
 
 			       msg += "\nDirected cell at (" + cell.x + ", " + cell.y + "): '" + result + "'\n" + msg;
-			       console.log(msg);
+			       //console.log(msg);
 			       // Fails because there's no such method
 			       //element.innerHTML(result);
 			       // Doesn't work at all.
@@ -211,13 +211,25 @@ mod.directive('playTime', function($timeout) {
 
 // Ripped off directly from 
 // http://stackoverflow.com/questions/15731634/how-do-i-handle-right-click-events-in-angular-js
-mod.directive('RightClick', function($parse) {
+mod.directive('ngRightClick', function($parse) {
+    console.debug("Registering a right-click handler");
+
     return function(scope, element, attrs) {
-	var fn = $parse(attrs.RightClick);
+	console.debug("Right: " + attrs.ngRightClick);
+
+	var fn = $parse(attrs.ngRightClick);
 	element.bind('contextmenu', function(event) {
 	    scope.$apply(function() {
+		console.debug("Replacing the context menu with " + fn);
 		event.preventDefault();
-		fn(scope, {$event:event});
+		try {
+		    fn(scope, {$event:event});
+		    console.debug("That should have worked");
+		}
+		catch(e) {
+		    var msg = "Right click handler failed: " + e;
+		    console.error(msg);
+		}
 	    });
 	});
     };

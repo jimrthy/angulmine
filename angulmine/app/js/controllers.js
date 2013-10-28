@@ -8,6 +8,7 @@ var mineControllers = angular.module('minesweep.controllers', ['minesweepApp.ser
 // A: No.
 // Then again, there doesn't seem to be any justification to keep it around at all.
 // Except that I have something somewhere that relies on it. So it can't quite just go away.
+// TODO: Make this go away.
 mineControllers.factory('time', function($timeout) {
     var time = {};
 
@@ -18,13 +19,6 @@ mineControllers.factory('time', function($timeout) {
     return time;
 });
 
-/*mineControllers.controller('Visual', ['$scope', 'minesweepApi',
-  function($scope, minesweepApi) {
-      $scope.GetBoard = function() {
-	  return minesweepApi.GetBoard();
-      };
-}]);*/
-
 mineControllers.controller('Game', ['$scope', 'time', 'minesweepApi',
     function($scope, time, minesweepApi) {
 	// Initialization
@@ -33,10 +27,15 @@ mineControllers.controller('Game', ['$scope', 'time', 'minesweepApi',
 			      flag_count: 0,
 			      finish_time: false
 			    };
+	$scope.$watch('localModel.flage_count');
+
+	// Seems more than a little wrong that I need this.
+	// Oh well.
 	$scope.cached_board = {};
 	$scope.$watch('cached_board', function(newValue, oldValue) {
 	    console.debug("Change!");
 	    }, true);
+
 
 	$scope.NewGame = function(width, height, bombCount) {
 	    minesweepApi.Fresh(width, height, bombCount);
@@ -61,12 +60,12 @@ mineControllers.controller('Game', ['$scope', 'time', 'minesweepApi',
 	$scope.GetFlagCount = function() {
 	    return $scope.localModel.flag_count;
 	}
-	$scope.IncrementFlags = function() {
+	/*$scope.IncrementFlags = function() {
 	    $scope.localModel.flag_count++;
 	}
 	$scope.DecrementFlags = function() {
 	    $scope.localModel.flag_count--;
-	}
+	}*/
 	$scope.BombCount = function() {
 	    return minesweepApi.BombCount();
 	}
@@ -138,7 +137,19 @@ mineControllers.controller('Game', ['$scope', 'time', 'minesweepApi',
 	}
 
 	$scope.onRightClick = function(cell) {
-	    cell.flagged = !cell.flagged;
+	    // FIXME: Why isn't this getting called?
+
+	    console.debug("Here!");
+	    console.debug("Toggling the flag at (" + cell.x + ", " + cell.y + ") from " + cell.flagged);
+	    var flag = !cell.flagged;
+	    // This should update board and bombCount also.
+	    if(flag) {
+		$scope.localModel.flag_count++;
+	    }
+	    else {
+		$scope.localModel.flag_count--;
+	    }
+	    cell.flagged = flag;
 	};
 
 	$scope.prettyPrint = function(board) {
