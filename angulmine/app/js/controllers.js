@@ -137,6 +137,10 @@ mineControllers.controller('Game', ['$scope', 'time', 'minesweepApi',
 	    //angular.copy(minesweepApi.GetBoard(), $scope.cached_board);
 	}
 
+	$scope.onRightClick = function(cell) {
+	    cell.flagged = !cell.flagged;
+	};
+
 	$scope.prettyPrint = function(board) {
 	    // For when something goes horribly wrong.
 	    console.log("Pretty printing");

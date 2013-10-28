@@ -209,3 +209,16 @@ mod.directive('playTime', function($timeout) {
     return { link: link };
 });
 
+// Ripped off directly from 
+// http://stackoverflow.com/questions/15731634/how-do-i-handle-right-click-events-in-angular-js
+mod.directive('RightClick', function($parse) {
+    return function(scope, element, attrs) {
+	var fn = $parse(attrs.RightClick);
+	element.bind('contextmenu', function(event) {
+	    scope.$apply(function() {
+		event.preventDefault();
+		fn(scope, {$event:event});
+	    });
+	});
+    };
+});
