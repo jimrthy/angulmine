@@ -74,7 +74,9 @@ mineControllers.controller('Game', ['$scope', 'time', 'minesweepApi',
 
 	$scope.UnflaggedBombs = function() {
 	    var bombCount = $scope.BombCount();
-	    return bombCount - $scope.localModel.flagCount;
+	    var flagCount =  $scope.GetFlagCount();
+	    console.log("UnflaggedBombs():\n\tTotal: " + bombCount + "\n\tFlags: " + flagCount);
+	    return bombCount - flagCount;
 	}
 
 	// Utility

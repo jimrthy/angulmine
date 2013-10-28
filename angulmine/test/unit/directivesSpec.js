@@ -21,9 +21,46 @@ describe('directives', function() {
 	it('should hide hidden cell', function() {
 	    inject(function($compile, $rootScope) {
 		var s = '<ul><li ng-repeat="row in GetBoard()">';
-		s += '<ul><li ng-repeat="cell in row"><span mine-cell="cell"></span></li></ul>';
+		s += '<ul><li ng-repeat="cell in row"><span class="hidden" mine-cell="cell"></span></li></ul>';
 		s += '</li></ul>';
 		var element = $compile(s)($rootScope);
+
+		var msg = "Just compiled a span to test:\n";
+		// Looks like we almost have the complete DOM
+		/*for(var prop in element) {
+		    msg += '\n\t' + prop + ': ' + element[prop];
+		};*/
+		// We don't, of course.
+		msg += element;
+		try {
+		    // The css() function isn't doing what I expected at all.
+		    // FIXME: Figure out what's going on here.
+		    msg += "\n\tCSS: " + element.css(element);
+		    msg += "\n\tClass: " + element.css(element, 'class');
+		}
+		catch(e) {
+		    msg += "No CSS...I could have sworn I saw this in the full object dump.\n";
+		    // Actually, that doesn't really look like it was the problem:
+		    msg += e;
+		    try {
+			msg += "\nStack Trace:\n" + e.stack;
+		    }
+		    catch(e2) {
+			msg += "\nApparently that isn't an Error. Failure from trying to access stack trace:\n"
+			+ e2;
+		    }
+
+
+		    msg += "\nElements I do have available:";
+		    for(var prop in element) {
+			msg += '\n\t' + prop;
+		    }
+		    msg += "\n\tCSS: " + element.css;
+		    msg += "\n\tHTML: " + element.html();
+		    msg += "\n\tText: '" + element.text() + "'";
+		}
+		console.debug(msg);
+
 		expect(element.text()).toEqual(' ');
 	    });
 	});
