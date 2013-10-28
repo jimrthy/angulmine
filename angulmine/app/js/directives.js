@@ -71,9 +71,9 @@ mod.directive('mineCell', function() {
 
 
 	// Update element based upon cell's state:
-	var msg = "Directing: " + cell + " (a " + typeof(cell) + ")\n";
-	//var result = '&nbsp;';
-	var result = 'X';
+	var msg = "Directing: " + cell + " (a " + typeof(cell) + ") at (" + cell.x + ", " + cell.y + ")\n";
+	var result = '&nbsp;';
+	//var result = 'X';
 
 	if(cell.hidden) {
 	    msg += "Hidden cell\n";
@@ -118,7 +118,8 @@ mod.directive('mineCell', function() {
 	//element.innerHTML = result;
 	//element.innerText = result;
 	//element.innerText(result);
-	element.text(result);
+	//element.text(result);
+	element.html(result);
 
 	//return result;
     }
@@ -141,6 +142,7 @@ mod.directive('playTime', function($timeout) {
 	      display = Math.floor ((current - scope.started) / 1000);
 	      }*/
 	    var display = scope.Time();
+	    console.debug("Updating time: " + display);
 	    element.text(display);
 	}
 

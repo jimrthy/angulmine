@@ -23,6 +23,9 @@ services.factory('minesweepApi', function() {
 
 	model.GetBoard = function() {
 	    // FIXME: Do I need to do an angular.copy?
+	    // This next line causes some serious conniptions.
+	    //return angular.copy(model.board);
+	    // Nothing seems to work right using this next approach.
 	    return model.board;
 	};
     /*model.GetStarted = function() {
@@ -81,8 +84,8 @@ services.factory('minesweepApi', function() {
 				flagged: false,
 				neighboring_bombs: 0,
 				// Location: makes the onClick handler much more convenient.
-				x: i,
-				y: j};
+				x: j,
+				y: i};
 		    row.push(cell);
 		}
 		board.push(row);
@@ -266,7 +269,7 @@ services.factory('minesweepApi', function() {
 	    // Kick off a new game.
 
 	    // Absolutely called for side-effects.
-	    console.log("Building a blank board");
+	    console.log("Building a blank " + width + "x" + height + "board with " + bombCount + " bombs");
 	    var playingField = buildBlankBoard(width, height);
 	    //console.log("Initial Playing Field:");
 	    //console.log(playingField);
@@ -299,7 +302,7 @@ services.factory('minesweepApi', function() {
 		visitNeighbors(board, x, y, model.SafeReveal);
 	    }
 	    else {
-		console.log(cell.neighboring_bombs + " bombs next door");
+		console.log(cell.neighboring_bombs + " bombs next door to (" + x + ", " + y + ")");
 	    }
 	}
     }

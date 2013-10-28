@@ -5,6 +5,9 @@
 var mineControllers = angular.module('minesweep.controllers', ['minesweepApp.services']);
 
 // Q: Does this make sense to move into a service?
+// A: No.
+// Then again, there doesn't seem to be any justification to keep it around at all.
+// Except that I have something somewhere that relies on it. So it can't quite just go away.
 mineControllers.factory('time', function($timeout) {
     var time = {};
 
@@ -15,11 +18,16 @@ mineControllers.factory('time', function($timeout) {
     return time;
 });
 
+mineControllers.controller('Visual', ['$scope', 'minesweepApi',
+  function($scope, minesweepApi) {
+      $scope.GetBoard = function() {
+	  return minesweepApi.GetBoard();
+      };
+}]);
+
 mineControllers.controller('Game', ['$scope', 'time', 'minesweepApi',
     function($scope, time, minesweepApi) {
 	// Initialization
-	//$scope.api = minesweepService.minesweepApi();
-	//$scope.api = minesweepApi();
 
 	$scope.localModel = { start_time: false,
 			      flag_count: 0,
@@ -55,15 +63,22 @@ mineControllers.controller('Game', ['$scope', 'time', 'minesweepApi',
 
 	$scope.Time = function() {
 	    var result = 0;
+	    var msg = "";
 	    if($scope.localModel.start_time) {
+		msg += "Started at " + $scope.localModel.start_time + "\n";
 		if($scope.localModel.finish_time) {
+		    msg += "Finished at " + $scope.localModel.finish_time + "\n";
 		    result = $scope.localModel.finish_time - $scope.localModel.start_time;
 		}
 		else {
+		    var time = new Date();
+		    msg += "Current Time: " + time + "\n";
 		    var deltaInMillis = time - $scope.localModel.start_time;
-		    result = Math.Floor(deltaInMills/1000);
+		    msg += "Delta: " + deltaInMillis + "\n";
+		    result = Math.floor(deltaInMillis/1000);
 		}
 	    }
+	    console.debug(msg);
 	    return result;
 	}
 
@@ -75,7 +90,7 @@ mineControllers.controller('Game', ['$scope', 'time', 'minesweepApi',
 	$scope.UnflaggedBombs = function() {
 	    var bombCount = $scope.BombCount();
 	    var flagCount =  $scope.GetFlagCount();
-	    console.log("UnflaggedBombs():\n\tTotal: " + bombCount + "\n\tFlags: " + flagCount);
+	    //console.log("UnflaggedBombs():\n\tTotal: " + bombCount + "\n\tFlags: " + flagCount);
 	    return bombCount - flagCount;
 	}
 
@@ -86,12 +101,12 @@ mineControllers.controller('Game', ['$scope', 'time', 'minesweepApi',
 
 	    // Possibly start the timer
 	    if(!$scope.localModel.start_time) {
-		$scope.localModel.start_time = time;
+		$scope.localModel.start_time = new Date();
 		console.log("Starting playing at: " + $scope.localModel.start_time);
 	    }
 	    var game_over = minesweepApi.Click(cell);
 	    if(game_over) {
-		$scope.localModel.finish_time = time;
+		$scope.localModel.finish_time = new Date();
 	    }
 	}
 
