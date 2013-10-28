@@ -62,13 +62,14 @@ mod.directive('mineCell', function() {
 	//<div ng-something="something == foo" some-thing="{{someThing}}" on-show="displayFunction()"></div>
 	// I'm not real clear on where ng-something comes into play.
     
-	// CSS classes to customize the way the numbers look when revealed.
-	revealedClasses: ['safe', 'neighbor1', 'neighbor2', 'neighbor3',
-			  'neighbor4', 'neighbor5', 'neighbor6',
-			  'neighbor7', 'neighbor8'],
 	link: function(scope, element, attrs) {
 	    // FIXME: Debug only
 	    //debug(scope, element, attrs);
+
+	    // CSS classes to customize the way the numbers look when revealed.
+	    var revealedClasses = ['safe', 'neighbor1', 'neighbor2', 'neighbor3',
+				  'neighbor4', 'neighbor5', 'neighbor6',
+				  'neighbor7', 'neighbor8'];
 
 	    attrs.$observe('mineCell',
 			   function(newValue) {
@@ -133,13 +134,15 @@ mod.directive('mineCell', function() {
 					       msg += "No hidden class...how can I verify which classes are available?\n";
 					   }
 					   // Q: Should this be applied to the attrs instead?
-					   //element.removeClass('hidden');
+					   element.removeClass('hidden');
+					   element.addClass(revealedClasses[cell.neighboring_bombs]);
 
 					   if(cell.neighboring_bombs > 0) {
 					       result = cell.neighboring_bombs;
 					       msg += "Danger: " + result + "\n";
 
-					       cell.addClass(revealedClasses[result]);
+					       // No method addClass on a MineCell object.
+					       //cell.addClass(revealedClasses[result]);
 					   }
 					   else {
 					       msg += "Clear -- " + cell + "\n";
