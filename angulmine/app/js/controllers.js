@@ -130,13 +130,20 @@ mineControllers.controller('Game', ['$scope', 'time', 'minesweepApi',
 	    console.debug("Toggling the flag at (" + cell.x + ", " + cell.y + ") from " + cell.flagged);*/
 	    var flag = !cell.flagged;
 	    // This should update board and bombCount also.
+	    cell.flagged = flag;
 	    if(flag) {
 		$scope.localModel.flag_count++;
+
+		// TODO: duplicated code. Evil.
+		var won = minesweepApi.CheckForWinner($scope.cached_board);
+		if('won' == won) {
+		    $scope.localModel.finish_time = new Date();
+		    alert("Congratulations! You won!");
+		}
 	    }
 	    else {
 		$scope.localModel.flag_count--;
 	    }
-	    cell.flagged = flag;
 	};
 
 	$scope.prettyPrint = function(board) {

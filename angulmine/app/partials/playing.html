@@ -1,22 +1,20 @@
 
 <div ng-controller="Game">
-<button ng-click="newGame(8, 8, 10)">:-)</button>
-<button ng-click="newGame(25, 25, 100)">:-|</button>
-<button ng-click="newGame(40, 40, 300)">:*-(</button>
+  <button ng-click="NewGame(8, 8, 10)">:-)</button>
+  <button ng-click="NewGame(25, 25, 100)">:-|</button>
+  <button ng-click="NewGame(40, 40, 300)">:*-(</button>
 
-<div>
-  <span>Bombs: <span class="report">{{ UnflaggedBombs() }}</span></span>
-  <span>Time: <span class="report" play-time></span></span>
-</div>
+  <div>
+    <span>Bombs: <span class="report">{{ UnflaggedBombs() }}</span></span>
+    <span>Time: <span class="report" play-time></span></span>
+  </div>
 
-<table class="playing-field">
-  <tbody>
-    <tr ng-repeat="row in cached_board">
-      <!-- The problem with this approach is that the click handler doesn't really have any good way
-	   to do styling. But that should be what the filter is for anyway -->
-      <td ng-repeat="cell in row" ng-click="onClick(cell)" ng-right-click="onRightClick(cell)"
-	  class="hidden cell" mine-cell={{cell}}></td>
-    </tr>
-  </tbody>
-</table>
+  <table class="playing-field">
+    <tbody>
+      <tr ng-repeat="row in cached_board">
+	<td ng-repeat="cell in row" ng-click="onClick(cell)" ng-right-click="onRightClick(cell)"
+	    class="hidden cell" mine-cell={{cell}}></td>
+      </tr>
+    </tbody>
+  </table>
 </div>

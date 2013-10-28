@@ -302,7 +302,7 @@ services.factory('minesweepApi', function() {
 	}
     }
 
-    var CheckForWinner = function(board) {
+    model.CheckForWinner = function(board) {
 	var result = '';
 
 	if(board.every(function(row) {
@@ -312,7 +312,11 @@ services.factory('minesweepApi', function() {
 		// If a bomb cell gets revealed, the player loses,
 		// but that's easier to check for right at the top
 		// of the click event.
-		return !cell.hidden || cell.bomb;
+
+		// This logic is at least mildly annoying:
+		// if you've located all the bombs but not flagged them,
+		// you still have to flag whatever's left.
+		return !cell.hidden || (cell.bomb && cell.flagged);
 	    });
 	})) {
 	    result = 'won';
@@ -358,7 +362,7 @@ services.factory('minesweepApi', function() {
 		    model.SafeReveal(model.board, cell.x, cell.y);
 
 		    // Is the player a winner?
-		    result = CheckForWinner(model.board);
+		    result = model.CheckForWinner(model.board);
 		}
 	    }
 	    else {
