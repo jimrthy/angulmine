@@ -62,22 +62,22 @@ mineControllers.controller('Game', ['$scope', 'time', 'minesweepApi',
 	}
 
 	$scope.Time = function() {
-	    var result = 0;
+	    var deltaInMillis = 0;
 	    var msg = "";
 	    if($scope.localModel.start_time) {
 		msg += "Started at " + $scope.localModel.start_time + "\n";
 		if($scope.localModel.finish_time) {
 		    msg += "Finished at " + $scope.localModel.finish_time + "\n";
-		    result = $scope.localModel.finish_time - $scope.localModel.start_time;
+		    deltaInMillis = $scope.localModel.finish_time - $scope.localModel.start_time;
 		}
 		else {
 		    var time = new Date();
 		    msg += "Current Time: " + time + "\n";
-		    var deltaInMillis = time - $scope.localModel.start_time;
-		    msg += "Delta: " + deltaInMillis + "\n";
-		    result = Math.floor(deltaInMillis/1000);
+		    deltaInMillis = time - $scope.localModel.start_time;
 		}
 	    }
+	    msg += "Delta: " + deltaInMillis + "\n";
+	    var result = Math.floor(deltaInMillis/1000);
 	    console.debug(msg);
 	    return result;
 	}
