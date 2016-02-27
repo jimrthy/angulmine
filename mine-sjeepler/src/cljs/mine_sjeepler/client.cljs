@@ -1,7 +1,15 @@
 (ns mine-sjeepler.client
-  (:require [clojure.browser.repl]
-            [goog.events :as events]
-            [goog.events.EventType :as event-type]))
+  (:require #_[clojure.browser.repl]
+            [goog.dom :as gdom]
+            ;; Pretty sure I need events, at least
+            #_[goog.events :as events]
+            #_[goog.events.EventType :as event-type]
+            [om.next :as om :refer-macros [defui]]
+            [om.dom :as dom]))
+
+(enable-console-print!)
+
+(println "Hello world!")
 
 (defn build-playing-field
   "Return an empty seq of seqs, representing a w by h grid"
@@ -69,7 +77,7 @@ Odds are, you probably want to replace this with something useful."
     (.appendChild (.-body js/document) canvas)
 
     (add-input-event-listeners)
-    
+
     ;; Build Initial State
     (let [initial-state {
                          :drawer (fn [state]

@@ -29,7 +29,8 @@
         :compiler {:output-to "resources/public/js/game-prod.js"
                    :optimizations :advanced
                    :pretty-print true}
-        :jar true}}}
+                     :jar true}}}
+  :global-vars {*warn-on-reflection* true}  ; Q: What, if anything, does this do for cljs?
   :main mine-sjeepler.core
   :profiles {:dev {:plugins [#_[com.cemerick/austin "0.1.1"]
                              #_[lein-cljsbuild "0.3.2"]
@@ -38,5 +39,7 @@
                    :dependencies [[org.clojure/tools.namespace "0.2.10"]
                                   [org.clojure/java.classpath "0.2.3"]]}}
   :plugins []
+  :repl-options {:init (println "Bang!")
+                 :timeout 60000}
   :ring {:handler scrabbletris.server/app}
   :source-paths ["src/clj"])
